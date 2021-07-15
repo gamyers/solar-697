@@ -1,6 +1,6 @@
 select_nsr_rows = """
 SELECT date_time, zipcode, DHI, DNI, GHI from nsrdb
-where zipcode = '74145'
+where zipcode = :zipcode
 and substr(date_time, 1, 4) in (:year);
 """
 
