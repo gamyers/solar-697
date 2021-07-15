@@ -60,9 +60,13 @@ create table if not exists geo_zipcodes(
 create_table_nsrdb = """
 create table if not exists nsrdb(
 'id' INTEGER PRIMARY KEY AUTOINCREMENT,
-'date_time' CHAR(24),
 'location_id' INTEGER,
 'zipcode' CHAR(10),
+'date_time' CHAR(24),
+'year' INTEGER,
+'month' INTEGER,
+'day' INTEGER,
+'hour' INTEGER,
 'Temperature' FLOAT,
 'Clearsky_DHI' FLOAT,
 'Clearsky_DNI' FLOAT,
