@@ -4,16 +4,6 @@ where zipcode = :zipcode
 and substr(date_time, 1, 4) in (:year1, :year2);
 """
 
-update_gzc_llltze = """
-update geo_zipcodes
-set location_id = :loc_id,
-lat_nrel = :lat,
-lon_nrel = :lon,
-elevation = :elev,
-time_zone = :tz
-where zipcode = :zipcode;
-"""
-
 
 select_zipcode_geo = """
 select "zipcode",
@@ -21,6 +11,10 @@ select "zipcode",
 "lon_zc" as "lon"
 from geo_zipcodes
 where "zipcode" = :zipcode
+"""
+
+select_distinct_zips = """
+SELECT DISTINCT zipcode FROM nsrdb;
 """
 
 
@@ -34,6 +28,17 @@ and substr(date_time, 1, 4) in (:year);
 # test query
 select_zipcode = """
 select * from geo_zipcodes
+where zipcode = :zipcode;
+"""
+
+
+update_gzc_llltze = """
+update geo_zipcodes
+set location_id = :loc_id,
+lat_nrel = :lat,
+lon_nrel = :lon,
+elevation = :elev,
+time_zone = :tz
 where zipcode = :zipcode;
 """
 
