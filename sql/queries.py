@@ -1,17 +1,7 @@
 select_nsr_rows = """
 SELECT date_time, zipcode, DHI, DNI, GHI from nsrdb
 where zipcode = :zipcode
-and substr(date_time, 1, 4) in (:year);
-"""
-
-update_gzc_llltze = """
-update geo_zipcodes
-set location_id = :loc_id,
-lat_nrel = :lat,
-lon_nrel = :lon,
-elevation = :elev,
-time_zone = :tz
-where zipcode = :zipcode;
+and substr(date_time, 1, 4) in (:year1, :year2);
 """
 
 
@@ -21,6 +11,10 @@ select "zipcode",
 "lon_zc" as "lon"
 from geo_zipcodes
 where "zipcode" = :zipcode
+"""
+
+select_distinct_zips = """
+SELECT DISTINCT zipcode FROM nsrdb;
 """
 
 
@@ -34,6 +28,17 @@ and substr(date_time, 1, 4) in (:year);
 # test query
 select_zipcode = """
 select * from geo_zipcodes
+where zipcode = :zipcode;
+"""
+
+
+update_gzc_llltze = """
+update geo_zipcodes
+set location_id = :loc_id,
+lat_nrel = :lat,
+lon_nrel = :lon,
+elevation = :elev,
+time_zone = :tz
 where zipcode = :zipcode;
 """
 
@@ -60,9 +65,13 @@ create table if not exists geo_zipcodes(
 create_table_nsrdb = """
 create table if not exists nsrdb(
 'id' INTEGER PRIMARY KEY AUTOINCREMENT,
-'date_time' CHAR(24),
 'location_id' INTEGER,
 'zipcode' CHAR(10),
+'date_time' CHAR(24),
+'year' INTEGER,
+'month' INTEGER,
+'day' INTEGER,
+'hour' INTEGER,
 'Temperature' FLOAT,
 'Clearsky_DHI' FLOAT,
 'Clearsky_DNI' FLOAT,
