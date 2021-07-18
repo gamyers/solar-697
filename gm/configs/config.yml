@@ -27,16 +27,20 @@ request_years:
   - 1999
   - 1998
 #
-file_locations:
-  data_path: "../../../data/"
-  db_path: "../../../data/db/"
-  data_path_usc: "../../../data/us_census/"
+file_paths:
+  data_path: "../../data/"
+  db_path: "../../data/db/"
+  data_path_zips: "../../data/us_census/"
+#
+file_names:
   data_file_usc: "2020_Gaz_zcta_national.txt"
-  data_file_zips: "zip_codes.txt"
+  data_file_zips: "zipcodes.txt"
   db_file_gzc: "geo_zipcodes.db"
-  # db_file: "city-state.db"
-  db_table1: "geo_zipcodes"
-  db_table2: "nsrdb"
+# 
+table_names:
+  db_table1: "nsrdb"
+  db_table2: "geo_zipcodes"
+
 #
 time_index:
   true: 1
