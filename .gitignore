@@ -1,5 +1,6 @@
-# in-repo files and dirs to ignore
+# root files and directories
 data/
+logs/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
