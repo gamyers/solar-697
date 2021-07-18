@@ -40,7 +40,6 @@ file_names:
 table_names:
   db_table1: "nsrdb"
   db_table2: "geo_zipcodes"
-
 #
 time_index:
   true: 1
