@@ -1,5 +1,7 @@
 # root files and directories
-data/
+data/db/okc-ok.db
+data/db/tulsa-ok.db
+data/db/*.sqbpro
 logs/
 
 # Byte-compiled / optimized / DLL files
