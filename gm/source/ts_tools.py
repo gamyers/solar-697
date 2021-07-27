@@ -1,15 +1,106 @@
 from itertools import product
 
 import pandas as pd
-# from statsmodels.tsa.api import SARIMAX
-from statsmodels.tsa.statespace.sarimax import SARIMAX
 from statsmodels.tsa.arima.model import ARIMA
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+from statsmodels.tsa.statespace.varmax import VARMAX
 from tqdm.notebook import tqdm
+
+
+def gen_varmax_params(p_rng=(0, 0), q_rng=(0, 0), debug=False):
+    """
+    input: 2 2-tuples of inclusive (p, q) value ranges
+           Boolean for debug printing
+    functionality: produce a cartesian product of the inputs
+    output: list of 2-tuple products
+    """
+    p = range(p_rng[0], p_rng[1] + 1)
+    q = range(q_rng[0], q_rng[1] + 1)
+
+    # Create a list with all possible combination of parameters
+    parameters = product(p, q)
+    parameters_list = list(parameters)
+
+    order_list = []
+
+    for params in parameters_list:
+        order_list.append(tuple(list(params)))
+
+    if debug:
+        print(f"VARMA Order list length: {len(order_list)}")
+
+    return order_list
+
+
+def VARMAX_optimizer(series, varmax_order, debug=False):
+    """
+    input: Pandas data series with pd.datetime index
+           list of 2-tuples representing VARMA orders (p, q)
+           Boolean for debug printing
+    functionality: model each (p, q) sequence, store AIC
+    return: pandas dataframe listing all (p, q) AIC pairs,
+            ordered best to worst
+    """
+
+    results = []
+
+    for order in tqdm(varmax_order):
+        try:
+            model = VARMAX(
+                series,
+                order=order,
+                enforce_stationarity=True,
+                trend="c",
+            ).fit(disp=False)
+            
+        except:
+            if debug:
+                print("exception occured")
+            continue
+
+        aic = model.aic
+        results.append([order, model.aic])
+
+    result_df = pd.DataFrame(results)
+    result_df.columns = ["(p, q)", "AIC"]
+    result_df = result_df.sort_values(by="AIC", ascending=True).reset_index(drop=True)
+
+    return result_df
+
+
+def varmax_model(frame, p=0, q=0, num_fc=1, forecast=False, summary=False):
+    """
+    input: Pandas Series with pd.datetime index.
+           Integers: VARMA parameters p, q
+           Integer: number of forecast periods
+           Boolean: summary print
+           Bookean: True return forecast, False return model
+    functionality: perform an ARIMA forecast of the Series time-series
+    return: forecast data or model
+    """
+
+    model = VARMAX(
+        frame,
+        order=(p, q),
+        trend="c",
+        enforce_stationarity=True,
+    ).fit(disp=False)
+
+    if summary:
+        print(model.summary())
+
+    if forecast:
+        start = len(frame)
+        end = start + num_fc
+        forecast = model.predict(start=start, end=end)
+        return forecast
+
+    return model
 
 
 def gen_arima_params(p_rng=(0, 0), d_rng=(0, 0), q_rng=(0, 0), debug=False):
     """
-    input: 3 3-tuples of inclusive value ranges
+    input: 3 2-tuples of inclusive value ranges
            Boolean for debug printing
     functionality: produce a cartesian product of the inputs
     output: list of 3-tuple products
@@ -68,6 +159,36 @@ def ARIMA_optimizer(series, arima_order, debug=False):
     return result_df
 
 
+def arima_model(series, p=0, d=0, q=0, num_fc=1, summary=False, forecast=False):
+    """
+    input: Pandas Series with pd.datetime index.
+           Integers: ARIMA parameters p, d, q
+           Integer: number of forecast periods
+           Boolean: summary print
+           Bookean: True return forecast, False return model
+    functionality: perform an ARIMA forecast of the Series time-series
+    return: forecast data or model
+    """
+
+    model = ARIMA(
+        series,
+        order=(p, d, p),
+        enforce_stationarity=True,
+        # trend="n",
+    ).fit()
+
+    if summary:
+        print(model.summary())
+
+    if forecast:
+        start = len(series)
+        end = start + num_fc
+        forecast = model.predict(start=start, end=end)
+        return forecast
+
+    return model
+
+
 def gen_sarima_params(
     p_rng=(0, 0),
     d_rng=(0, 0),
@@ -104,6 +225,7 @@ def gen_sarima_params(
 
     if debug:
         print(f"SARIMA Order list length: {len(order_list)}")
+        print(f"SARIMA Order\n {order_list[:3]}")
 
     return order_list
 
@@ -123,20 +245,18 @@ def SARIMA_optimizer(series, sarima_order, s=0, debug=False):
     for order in tqdm(sarima_order):
         if debug:
             print(order)
-
-                try:
-                    model = ARIMA(
-                        series,
-                        order=(order[0], order[1], order[2]),
-                        seasonal_order=(order[3], order[4], order[5], s),
-                        enforce_stationarity=True,
-                        # trend="t",
-                        # simple_differencing=True,            
-                    ).fit()
-                except:
-                    if debug:
-                        print("exception occured")
-                    continue
+        try:
+            model = ARIMA(
+                series,
+                order=(order[0], order[1], order[2]),
+                seasonal_order=(order[3], order[4], order[5], s),
+                enforce_stationarity=True,
+                # trend="c",                
+            ).fit()
+        except:
+            if debug:
+                print("exception occured")
+            continue
 
         aic = model.aic
         results.append([order, model.aic])
@@ -146,3 +266,34 @@ def SARIMA_optimizer(series, sarima_order, s=0, debug=False):
     result_df = result_df.sort_values(by="AIC", ascending=True).reset_index(drop=True)
 
     return result_df
+
+
+def sarima_model(series, p=0, d=0, q=0, P=0, D=0, Q=0, s=0, num_fc=1, summary=False, forecast=False):
+    """
+    input: Pandas Series with pd.datetime index.
+           Integers: ARIMA parameters p, d, q
+           Integer: number of forecast periods
+           Boolean: summary print
+           Bookean: True return forecast, False return model
+    functionality: perform an ARIMA forecast of the Series time-series
+    return: forecast data or model
+    """
+
+    model = ARIMA(
+        series,
+        order=(p, d, p),
+        seasonal_order=(P, D, Q, s),
+        enforce_stationarity=True,
+        # trend="c",
+    ).fit()
+
+    if summary:
+        print(model.summary())
+
+    if forecast:
+        start = len(series)
+        end = start + num_fc
+        forecast = model.predict(start=start, end=end)
+        return forecast
+
+    return model
