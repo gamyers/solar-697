@@ -28,6 +28,7 @@ def gen_varmax_params(p_rng=(0, 0), q_rng=(0, 0), debug=False):
 
     if debug:
         print(f"VARMA Order list length: {len(order_list)}")
+        print(f"VARMA Order list\n {order_list[:3]}")
 
     return order_list
 
@@ -122,6 +123,7 @@ def gen_arima_params(p_rng=(0, 0), d_rng=(0, 0), q_rng=(0, 0), debug=False):
 
     if debug:
         print(f"ARIMA Order list length: {len(order_list)}")
+        print(f"ARIMA Order list\n {order_list[:3]}")
 
     return order_list
 
@@ -225,7 +227,7 @@ def gen_sarima_params(
 
     if debug:
         print(f"SARIMA Order list length: {len(order_list)}")
-        print(f"SARIMA Order\n {order_list[:3]}")
+        print(f"SARIMA Order list\n {order_list[:3]}")
 
     return order_list
 
