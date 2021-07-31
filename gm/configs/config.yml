@@ -1,4 +1,6 @@
 location_info:
+  # city: "okc"
+  # state: "ok"
   city: "chino"
   state: "ca"
 #
