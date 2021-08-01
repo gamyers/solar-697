@@ -55,7 +55,9 @@ lstm_cfg:
   period: 12
   periods_train: 16
   periods_val: 5
-  periods_test: 2  
+  periods_test: 2
+  min_max_lower: -1
+  min_max_upper: 1
   
 #
 url_variables:
