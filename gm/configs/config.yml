@@ -50,6 +50,14 @@ time_index:
 num_rows: 
   - 99999
 #
+lstm_cfg:
+  data_units: "M" # "D"
+  period: 12
+  periods_train: 16
+  periods_val: 5
+  periods_test: 2  
+  
+#
 url_variables:
   affiliation: University+of+Michigan
   attrs: ""
