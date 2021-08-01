@@ -2,8 +2,8 @@
 gm/source/secret.py
 gm/source/logs/
 gm/notebooks/logs/
-gm/notebooks/_*.ipynb
 gm/data/
+notebooks/_*.ipynb
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
