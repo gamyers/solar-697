@@ -25,11 +25,21 @@ and substr(date_time, 1, 4) in (:year);
 """
 
 
-# test query
-select_zipcode = """
-select * from geo_zipcodes
-where zipcode = :zipcode;
-"""
+req_str = (
+    f"https://developer.nrel.gov/api/solar/nsrdb_psm3_download.csv?"
+    + f'wkt=POINT({zip_codes[zip_code]["lon"]}%20{zip_codes[zip_code]["lat"]})'
+    + f"&names={year}"
+    + f'&leap_day={cfg_vars["leap_year"]}'
+    + f'&interval={cfg_vars["interval"]}'
+    + f'&utc={cfg_vars["utc"]}'
+    + f'&full_name={cfg_vars["name"]}'
+    + f'&email={cfg_vars["email"]}'
+    + f'&affiliation={cfg_vars["affiliation"]}'
+    + f'&mailing_list={cfg_vars["mailing_list"]}'
+    + f'&reason={cfg_vars["use"]}'
+    + f'&api_key={cfg_vars["key"]}'
+    + f'&attributes={cfg_vars["attrs"]}'
+)
 
 
 update_gzc_llltze = """
@@ -91,4 +101,11 @@ create table if not exists nsrdb(
 'Wind_Speed' FLOAT,
 'Global_Horizontal_UV_Irradiance_(280-400nm)' FLOAT,
 'Global_Horizontal_UV_Irradiance_(295-385nm)' FLOAT);
+"""
+
+
+# test query
+select_zipcode = """
+select * from geo_zipcodes
+where zipcode = :zipcode;
 """

@@ -4,6 +4,7 @@ gm/source/logs/
 gm/notebooks/logs/
 gm/data/
 notebooks/_*.ipynb
+notebooks/_*.csv
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
