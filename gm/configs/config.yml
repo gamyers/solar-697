@@ -1,9 +1,10 @@
 location_info:
+  # city: "tulsa"
   # city: "okc"
-  # state: "ok"
   # city: "chino"
-  # state: "ca"
   city: ""
+  # state: "ok"
+  # state: "ca"
   state: "AzCaFlNyTxWaWi"
 #
 request_years:
