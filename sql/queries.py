@@ -1,7 +1,20 @@
-select_nsr_rows = """
-SELECT date_time, zipcode, DHI, DNI, GHI from nsrdb
+select_nsr_rows = f"""
+SELECT date_time,
+-- year, month, day, 
+-- zipcode,
+-- Clearsky_DHI, DHI,
+Clearsky_DNI, DNI,
+Clearsky_GHI, GHI,
+Temperature,
+Relative_Humidity,
+Precipitable_Water,
+-- Wind_Direction,
+Wind_Speed
+from nsrdb
 where zipcode = :zipcode
-and substr(date_time, 1, 4) in (:year1, :year2);
+-- and not (month = 2 and day = 29)
+-- and year = 2000
+;
 """
 
 
@@ -24,22 +37,21 @@ where zipcode = :zipcode
 and substr(date_time, 1, 4) in (:year);
 """
 
-
-req_str = (
-    f"https://developer.nrel.gov/api/solar/nsrdb_psm3_download.csv?"
-    + f'wkt=POINT({zip_codes[zip_code]["lon"]}%20{zip_codes[zip_code]["lat"]})'
-    + f"&names={year}"
-    + f'&leap_day={cfg_vars["leap_year"]}'
-    + f'&interval={cfg_vars["interval"]}'
-    + f'&utc={cfg_vars["utc"]}'
-    + f'&full_name={cfg_vars["name"]}'
-    + f'&email={cfg_vars["email"]}'
-    + f'&affiliation={cfg_vars["affiliation"]}'
-    + f'&mailing_list={cfg_vars["mailing_list"]}'
-    + f'&reason={cfg_vars["use"]}'
-    + f'&api_key={cfg_vars["key"]}'
-    + f'&attributes={cfg_vars["attrs"]}'
-)
+# nrel_req_str = (
+#     f"https://developer.nrel.gov/api/solar/nsrdb_psm3_download.csv?"
+#     + f'wkt=POINT({zip_codes[zip_code]["lon"]}%20{zip_codes[zip_code]["lat"]})'
+#     + f"&names={year}"
+#     + f'&leap_day={cfg_vars["leap_year"]}'
+#     + f'&interval={cfg_vars["interval"]}'
+#     + f'&utc={cfg_vars["utc"]}'
+#     + f'&full_name={cfg_vars["name"]}'
+#     + f'&email={cfg_vars["email"]}'
+#     + f'&affiliation={cfg_vars["affiliation"]}'
+#     + f'&mailing_list={cfg_vars["mailing_list"]}'
+#     + f'&reason={cfg_vars["use"]}'
+#     + f'&api_key={cfg_vars["key"]}'
+#     + f'&attributes={cfg_vars["attrs"]}'
+# )
 
 
 update_gzc_llltze = """
