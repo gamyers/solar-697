@@ -13,7 +13,6 @@ Wind_Speed
 from nsrdb
 where zipcode = :zipcode
 -- and not (month = 2 and day = 29)
--- and year = 2000
 ;
 """
 

@@ -1,3 +1,4 @@
+import sys
 from itertools import product
 
 import pandas as pd
@@ -5,6 +6,25 @@ from statsmodels.tsa.arima.model import ARIMA
 from statsmodels.tsa.statespace.sarimax import SARIMAX
 from statsmodels.tsa.statespace.varmax import VARMAX
 from tqdm.notebook import tqdm
+
+sys.path.append("../../sql")
+import queries
+
+
+def get_irr_data(conn, zipcode):
+    params = {"zipcode": zipcode}
+
+    df = pd.read_sql(
+        queries.select_nsr_rows,
+        conn,
+        params=params,
+        index_col="date_time",
+        parse_dates=["date_time"],
+    )
+
+    df.sort_index(axis=0, inplace=True)
+
+    return df
 
 
 def gen_varmax_params(p_rng=(0, 0), q_rng=(0, 0), debug=False):
@@ -33,6 +53,20 @@ def gen_varmax_params(p_rng=(0, 0), q_rng=(0, 0), debug=False):
     return order_list
 
 
+def get_plots_layout(columns=2, column_names=[]):
+    # row, column dimension calculation
+
+    if len(column_names) % columns:
+        rows = int((len(column_names) + 1) / columns)
+        cols = 2
+    else:
+        rows = int(len(column_names) / columns)
+        cols = 2
+
+    return (rows, cols)
+    
+
+
 def VARMAX_optimizer(series, varmax_order, debug=False):
     """
     input: Pandas data series with pd.datetime index
@@ -53,7 +87,7 @@ def VARMAX_optimizer(series, varmax_order, debug=False):
                 enforce_stationarity=True,
                 trend="c",
             ).fit(disp=False)
-            
+
         except:
             if debug:
                 print("exception occured")
@@ -253,7 +287,7 @@ def SARIMA_optimizer(series, sarima_order, s=0, debug=False):
                 order=(order[0], order[1], order[2]),
                 seasonal_order=(order[3], order[4], order[5], s),
                 enforce_stationarity=True,
-                # trend="c",                
+                # trend="c",
             ).fit()
         except:
             if debug:
