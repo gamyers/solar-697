@@ -1,3 +1,4 @@
+import glob
 import sys
 from itertools import product
 
@@ -9,6 +10,16 @@ from tqdm.notebook import tqdm
 
 sys.path.append("../../sql")
 import queries
+
+
+def get_db_files(db_path="./"):
+    db_files = [
+        file.split("/")[-1]
+        for file in glob.glob(db_path + "*.db")
+        if file.split("/")[-1] != "geo_zipcodes.db"
+    ]
+
+    return tuple(sorted(db_files))
 
 
 def get_irr_data(conn, zipcode):
@@ -56,15 +67,14 @@ def gen_varmax_params(p_rng=(0, 0), q_rng=(0, 0), debug=False):
 def get_plots_layout(columns=2, column_names=[]):
     # row, column dimension calculation
 
-    if len(column_names) % columns:
+    if not len(column_names) % columns:
         rows = int((len(column_names) + 1) / columns)
-        cols = 2
+        cols = columns
     else:
         rows = int(len(column_names) / columns)
-        cols = 2
+        cols = columns
 
     return (rows, cols)
-    
 
 
 def VARMAX_optimizer(series, varmax_order, debug=False):
