@@ -28,6 +28,7 @@ def plot_histograms(df, title="Raw Data", zipcode="10001", t_range=[0, None]):
         rows=rows,
         cols=cols,
         subplot_titles=columns,
+        shared_yaxes=True,
     )
 
     for _, row in enumerate(range(1, rows + 1)):
@@ -93,6 +94,7 @@ def plot_data(df, title="Raw Data", zipcode="10001", columns=[], units=[], t_ran
         rows=rows,
         cols=cols,
         subplot_titles=columns,
+        shared_xaxes=True,
     )
 
     for _, row in enumerate(range(1, rows + 1)):
@@ -115,9 +117,6 @@ def plot_data(df, title="Raw Data", zipcode="10001", columns=[], units=[], t_ran
                 row=row,
                 col=col,
             )
-
-            # fig.update_xaxes(title_text="Year/Month")
-
             col_idx += 1
 
     fig.update_layout(
@@ -147,7 +146,6 @@ def plot_data(df, title="Raw Data", zipcode="10001", columns=[], units=[], t_ran
         font_color=COLORS["text"],
         autosize=True,
         height=600,
-        # width=550,
     )
 
     return fig
@@ -161,7 +159,6 @@ def plot_multi_line(df, title="Title", columns=[], t_range=[0, None]):
 
     # labels = columns
     label_text = [label.replace("_", " ") for label in columns]
-    # {label_text[0]}, {label_text[1]}, {label_text[2]}
 
     fig = go.Figure()
 
