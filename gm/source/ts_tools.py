@@ -1,15 +1,33 @@
 import glob
+import math
+import sqlite3
 import sys
 from itertools import product
 
 import pandas as pd
+import queries
+from logzero import logger
 from statsmodels.tsa.arima.model import ARIMA
 from statsmodels.tsa.statespace.sarimax import SARIMAX
 from statsmodels.tsa.statespace.varmax import VARMAX
 from tqdm.notebook import tqdm
 
 sys.path.append("../../sql")
-import queries
+
+
+def get_db_connection(db_path, db_filename: str):
+    conn = sqlite3.connect(db_path + db_filename)
+    logger.info(f"Connection made: {conn}")
+    return conn
+
+
+def get_db_zipcodes(conn):
+    cursor = conn.cursor()
+    cursor.execute(queries.select_distinct_zips)
+    zipcodes = cursor.fetchall()
+    zipcodes = [z[0] for z in zipcodes]
+    logger.info(f"Distinct zip codes: {zipcodes}")
+    return zipcodes
 
 
 def get_db_files(db_path="./"):
@@ -64,17 +82,10 @@ def gen_varmax_params(p_rng=(0, 0), q_rng=(0, 0), debug=False):
     return order_list
 
 
-def get_plots_layout(columns=2, column_names=[]):
+def get_plots_layout(columns=1, items=1):
     # row, column dimension calculation
 
-    if not len(column_names) % columns:
-        rows = int((len(column_names) + 1) / columns)
-        cols = columns
-    else:
-        rows = int(len(column_names) / columns)
-        cols = columns
-
-    return (rows, cols)
+    return {"rows": (math.ceil(items / columns)), "columns": columns}
 
 
 def VARMAX_optimizer(series, varmax_order, debug=False):
