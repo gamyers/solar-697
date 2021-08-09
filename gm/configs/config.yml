@@ -8,6 +8,21 @@ location_info:
   state: "AzCaFlNyTxWaWi"
   # state: "OkCa"
 #
+data_units:
+  Clearsky_DNI: "Wh/m^2"
+  DNI: "Wh/m^2"
+  Clearsky_GHI: "Wh/m^2"
+  GHI: "Wh/m^2"
+  Temperature: "°C"
+  Relative_Humidity: "%RH"
+  Precipitable_Water: "mm"
+  Wind_Speed: "m/s" 
+#
+meteorological_fields:
+  - "Temperature"
+  - "Relative_Humidity"
+  - "Precipitable_Water"
+#
 request_years:
   - 2020
   - 2019
