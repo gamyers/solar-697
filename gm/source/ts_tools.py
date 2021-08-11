@@ -14,9 +14,10 @@ from tqdm.notebook import tqdm
 
 sys.path.append("../../sql")
 
-pd.set_option("plotting.backend", "plotly")s
+pd.set_option("plotting.backend", "plotly")
 
-def get_db_connection(db_path, db_filename: str):
+
+def get_db_connection(db_path, db_filename):
     conn = sqlite3.connect(db_path + db_filename)
     logger.info(f"Connection made: {conn}")
     return conn
@@ -37,8 +38,8 @@ def get_locale_data(conn, zipcode):
     query_data = cursor.fetchone()
     locale_data = [qd for qd in query_data]
     logger.info(f"Locale data: {locale_data}")
-    return locale_data    
-    
+    return locale_data
+
 
 def get_db_files(db_path="./"):
     db_files = [
