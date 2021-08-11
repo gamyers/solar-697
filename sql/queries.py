@@ -36,23 +36,6 @@ where zipcode = :zipcode
 and substr(date_time, 1, 4) in (:year);
 """
 
-# nrel_req_str = (
-#     f"https://developer.nrel.gov/api/solar/nsrdb_psm3_download.csv?"
-#     + f'wkt=POINT({zip_codes[zip_code]["lon"]}%20{zip_codes[zip_code]["lat"]})'
-#     + f"&names={year}"
-#     + f'&leap_day={cfg_vars["leap_year"]}'
-#     + f'&interval={cfg_vars["interval"]}'
-#     + f'&utc={cfg_vars["utc"]}'
-#     + f'&full_name={cfg_vars["name"]}'
-#     + f'&email={cfg_vars["email"]}'
-#     + f'&affiliation={cfg_vars["affiliation"]}'
-#     + f'&mailing_list={cfg_vars["mailing_list"]}'
-#     + f'&reason={cfg_vars["use"]}'
-#     + f'&api_key={cfg_vars["key"]}'
-#     + f'&attributes={cfg_vars["attrs"]}'
-# )
-
-
 update_gzc_llltze = """
 update geo_zipcodes
 set location_id = :loc_id,
@@ -112,6 +95,28 @@ create table if not exists nsrdb(
 'Wind_Speed' FLOAT,
 'Global_Horizontal_UV_Irradiance_(280-400nm)' FLOAT,
 'Global_Horizontal_UV_Irradiance_(295-385nm)' FLOAT);
+"""
+
+create_table_monthly_nsrdb = """
+create table if not exists nsrdb(
+'id' INTEGER PRIMARY KEY AUTOINCREMENT,
+'location_id' INTEGER,
+'zipcode' CHAR(10),
+'date_time' CHAR(24),
+'Temperature' FLOAT,
+'Clearsky_DHI' FLOAT,
+'DHI' FLOAT,
+'Clearsky_DNI' FLOAT,
+'DNI' FLOAT,
+'Clearsky_GHI' FLOAT,
+'GHI' FLOAT,
+'Dew_Point' FLOAT,
+'Relative_Humidity' FLOAT,
+'Pressure' FLOAT,
+'Precipitable_Water' FLOAT,
+'Wind_Speed' FLOAT,
+'GHI_UV_wd' FLOAT,
+'GHI_UV_nw' FLOAT);
 """
 
 
