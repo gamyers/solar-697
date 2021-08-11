@@ -23,6 +23,11 @@ meteorological_fields:
   - "Relative_Humidity"
   - "Precipitable_Water"
 #
+viz_page_options:
+  - "EDA"
+  - "Decomposition"
+  - "Forecasting"
+#
 request_years:
   - 2020
   - 2019
