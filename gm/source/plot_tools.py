@@ -3,6 +3,8 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import ts_tools
 
+pd.set_option("plotting.backend", "plotly")
+
 COLORS = {
     "background": "#111111",
     "text": "#7FDBFF",
@@ -134,7 +136,7 @@ def plot_data(df, title="Raw Data", zipcode="10001", units={}, t_range=[0, None]
             l=5,
             r=5,
             b=0,
-            t=75,
+            t=75, # 100, # 75
             pad=0,
         ),
         legend=dict(
@@ -179,7 +181,7 @@ def plot_data(df, title="Raw Data", zipcode="10001", units={}, t_range=[0, None]
     return fig
 
 
-def plot_multi_line(df, title="Title", columns=[], t_range=[0, None]):
+def plot_multi_line(df, title="Title", locale=[], columns=[], t_range=[0, None]):
     # t_range[0] == 0, t_range[1] == None -> include all data
     df_plot = df.iloc[t_range[0] : t_range[1]]
 
@@ -205,7 +207,7 @@ def plot_multi_line(df, title="Title", columns=[], t_range=[0, None]):
 
     fig.update_layout(
         title=dict(
-            text=f"{title}",
+            text=f"{title} for {locale[0]}, {locale[2]}",
             xanchor="center",
             x=0.5,
             font=dict(

@@ -1,4 +1,4 @@
-select_nsr_rows = f"""
+select_nsr_rows = """
 SELECT date_time,
 -- year, month, day, 
 -- zipcode,
@@ -16,6 +16,12 @@ where zipcode = :zipcode
 ;
 """
 
+select_locale_data = """
+select city, county, state
+from geo_zipcodes
+where zipcode = :zipcode
+;
+"""
 
 select_zipcode_geo = """
 select "zipcode",
@@ -61,7 +67,10 @@ create table if not exists geo_zipcodes(
 'lat_nrel' FLOAT,
 'lon_nrel' FLOAT,
 'elevation' FLOAT,
-'time_zone' INTEGER
+'time_zone' INTEGER,
+'city' TEXT,
+'county' TEXT,
+'state' TEXT
 );
 """
 
