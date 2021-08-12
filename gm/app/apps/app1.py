@@ -2,7 +2,6 @@
 # coding: utf-8
 
 import os
-import site
 import sqlite3
 import sys
 
@@ -14,8 +13,6 @@ import dash
 import dash_bootstrap_components as dbc
 import dash_core_components as dcc
 import dash_html_components as html
-import dbrd_eda
-import dbrd_tools
 import logzero
 import numpy as np
 import pandas as pd
@@ -28,8 +25,6 @@ from app import app
 from dash.dependencies import Input, Output
 from dash_table import DataTable
 from logzero import logger
-from tqdm import tqdm
-from tqdm.notebook import tqdm
 from yaml import dump, load, safe_load
 
 pd.set_option("plotting.backend", "plotly")
@@ -39,8 +34,8 @@ log_file = "dashboard_app.log"
 
 logzero.logfile(
     log_path + log_file,
-    maxBytes=1e6,
-    backupCount=5,
+    maxBytes=1e5,
+    backupCount=1,
     disableStderrLogger=True,
 )
 logger.info(f"{log_path}, {log_file}\n")
@@ -84,7 +79,7 @@ db_files = ts_tools.get_db_files(db_path)
 logger.info(f"DB Path: {db_path}\n{db_files}\n")
 
 
-layout_1 = html.Div(
+layout_app1 = html.Div(
     [
         dbc.Row(
             [
@@ -95,7 +90,7 @@ layout_1 = html.Div(
                         value="nsrdb_monthly.db",  # db_files[0],
                         placeholder="Select a database",
                     ),
-                    width={"size": 2, "offset": 1},
+                    width={"size": 2, "offset": 0},
                 ),
                 dbc.Col(
                     dcc.Dropdown(
@@ -104,14 +99,7 @@ layout_1 = html.Div(
                     ),
                     width={"size": 2, "offset": 1},
                 ),
-                dbc.Col(
-                    dcc.Dropdown(
-                        id="dd-viz-selection",
-                        options=[{"label": page, "value": page} for page in viz_pages],
-                        value=viz_pages[0],
-                    ),
-                    width={"size": 2, "offset": 1},
-                ),
+
             ],
             no_gutters=False,
         ),
@@ -127,7 +115,7 @@ layout_1 = html.Div(
                             id="graph-data-view",
                         ),
                     ],
-                    width={"size": 5, "offset": 1},
+                    width={"size": 6, "offset": 0},
                 ),
                 dbc.Col(
                     [
@@ -156,7 +144,7 @@ layout_1 = html.Div(
                             id="graph-meteoro-view",
                         ),
                     ],
-                    width={"size": 5, "offset": 1},
+                    width={"size": 6, "offset": 0},
                 ),
                 dbc.Col(
                     [
@@ -207,6 +195,8 @@ def get_zipcodes(file_name):
     zipcodes = ts_tools.get_db_zipcodes(conn)
     conn.close()
 
+    logger.info(f"app1 zipcodes retrieved\n{zipcodes}")
+    
     # return the list object to properly populate the dropdown!
     return [{"label": zipcode, "value": zipcode} for zipcode in zipcodes]
 
@@ -218,6 +208,7 @@ def get_zipcodes(file_name):
     ],
 )
 def set_zipcode_value(options):
+    logger.info(f"app1 zipcode selected: {options[0]['value']}")
     return options[0]["value"]
 
 
@@ -238,7 +229,7 @@ def graph_output(db_filename, zipcode):
 
     cntx = dash.callback_context
     context = cntx.triggered[0]["prop_id"].split(".")[0]
-    # print(f"graph_output #1 Context = {context}\n")
+    logger.info(f"app1 graph_output #1 Context = {context}\n")
 
     if context == "dd-db-selection":
         conn = ts_tools.get_db_connection(db_path, db_filename)
@@ -246,13 +237,13 @@ def graph_output(db_filename, zipcode):
         zipcode = zipcodes[0]
         locale_data = ts_tools.get_locale_data(conn, zipcode)
         df = ts_tools.get_irr_data(conn, zipcode)
-        # print(f"Made if: {db_filename}, {zipcode}")
+        logger.info(f"app1 Made if: {db_filename}, {zipcode}")
 
     elif context == "dd-zipcode-selection":
-        # print(f"Made elif: {db_filename}, {zipcode}")
         conn = ts_tools.get_db_connection(db_path, db_filename)
         locale_data = ts_tools.get_locale_data(conn, zipcode)
         df = ts_tools.get_irr_data(conn, zipcode)
+        logger.info(f"app1 Made elif: {db_filename}, {zipcode}")
 
     else:
         db_filename = db_files[0]
@@ -261,34 +252,41 @@ def graph_output(db_filename, zipcode):
         zipcode = zipcodes[0]
         locale_data = ts_tools.get_locale_data(conn, zipcode)
         df = ts_tools.get_irr_data(conn, zipcode)
-        # print(f"Made else: {db_filename}, {zipcode}")
+        logger.info(f"app1 Made else: {db_filename}, {zipcode}")
+        
+    logger.info(f"app1 passed if/elif/else")        
 
-    df_rsm = df  # df.resample("M").mean()
-
-    df_desc = df_rsm.describe().transpose().round(decimals=2).reset_index(drop=False)
+    df_desc = df.describe().transpose().round(decimals=2).reset_index(drop=False)
     desc_columns = [{"id": col, "name": col} for col in df_desc.columns]
+    
+    logger.info(f"app1 passed df_desc")
 
     title1 = "Irradiance Data"
     fig1 = plot_tools.plot_data(
-        df_rsm,
+        df,
         title=title1,
         zipcode=zipcode,
         units=data_units,
     )
+    logger.info(f"app1 passed {title1}")
 
     title2 = "Data Distributions"
     fig2 = plot_tools.plot_histograms(
-        df_rsm,
+        df,
         title=title2,
         zipcode=zipcode,
     )
+    logger.info(f"app1 passed {title2}")
 
     title3 = "Meteorological Conditions"
     fig3 = plot_tools.plot_multi_line(
-        df_rsm,
+        df,
         title=title3,
         locale=locale_data,
         columns=meteoro_fields,
     )
+    logger.info(f"app1 passed {title3}")
+    
+    logger.info(f"app1 graph_output return")
 
     return fig1, fig2, fig3, df_desc.to_dict("records"), desc_columns
