@@ -2,19 +2,71 @@ import dash
 import dash_bootstrap_components as dbc
 import dash_core_components as dcc
 import dash_html_components as html
+import logzero
 from app import app
-from apps import app1, app2
+from apps import app1, app2 # , app3
 from dash.dependencies import Input, Output
 from dash_table import DataTable
+from logzero import logger
 
+log_path = "logs/"
+log_file = "dashboard_app.log"
+
+logzero.logfile(
+    log_path + log_file,
+    maxBytes=1e5,
+    backupCount=1,
+    disableStderrLogger=True,
+)
+logger.info(f"{log_path}, {log_file}\n")
+
+
+navbar_style = {
+    "position": "fixed",
+    "top": 70,
+}
 
 app.layout = html.Div(
     [
-        dbc.Nav([
-            dbc.NavItem(dbc.NavLink("EDA")),
-        ]),
-        dcc.Location(id="url", refresh=True), # False
-        html.Div(id="page-content"),
+        dcc.Location(id="url", refresh=True),
+        dbc.Row(
+            [
+                dbc.Col(
+                    dbc.Nav(
+                        [
+                            dbc.NavLink(
+                                "EDA",
+                                href="/apps/app1",
+                                active="exact",
+                            ),
+                            dbc.NavLink(
+                                "Data Trends",
+                                href="/apps/app2",
+                                active="exact",
+                            ),
+                            dbc.NavLink(
+                                "Forecasting",
+                                href="/apps/app3",
+                                active="exact",
+                            ),
+                        ],
+                        vertical=True,
+                        pills=True,
+                        style=navbar_style,
+                    ),
+                    width=1,
+                ),
+                dbc.Col(
+                    [
+                        html.Div(
+                            id="page-content",
+                            children=[],
+                        ),
+                    ],
+                    width=11,
+                ),
+            ]
+        ),
     ],
 )
 
@@ -24,12 +76,22 @@ app.layout = html.Div(
     Input("url", "pathname"),
 )
 def display_page(pathname):
-    if pathname == "/": # "/apps/app1":
-        return app1.layout_1
+    if pathname == "/":
+        return app1.layout_app1
+    if pathname == "/apps/app1":
+        return app1.layout_app1
     elif pathname == "/apps/app2":
-        return app2.layout
+        return app2.layout_app2
+    elif pathname == "/apps/app3":
+        return app3.layout_app3
     else:
-        return "404"
+        return dbc.Jumbotron(
+            [
+                html.H1("404: Content not found"),
+                html.Hr(),
+                html.P(f"path -> {pathname} not available"),
+            ]
+        )
 
 
 if __name__ == "__main__":

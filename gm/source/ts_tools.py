@@ -4,15 +4,15 @@ import sqlite3
 import sys
 from itertools import product
 
+sys.path.append("../../sql")
+
 import pandas as pd
 import queries
 from logzero import logger
 from statsmodels.tsa.arima.model import ARIMA
+from statsmodels.tsa.seasonal import seasonal_decompose
 from statsmodels.tsa.statespace.sarimax import SARIMAX
 from statsmodels.tsa.statespace.varmax import VARMAX
-from tqdm.notebook import tqdm
-
-sys.path.append("../../sql")
 
 pd.set_option("plotting.backend", "plotly")
 
@@ -67,6 +67,21 @@ def get_irr_data(conn, zipcode):
     return df
 
 
+def get_plots_layout(num_columns=1, num_items=1):
+    # row, column dimension calculation
+    return {"rows": (math.ceil(num_items / num_columns)), "columns": num_columns}
+
+
+def get_data_decomps(df, period=12):
+    decomps = {}
+    cols = df.columns.tolist()
+    
+    for col in cols:
+        decomps.update({col: seasonal_decompose(df[col], model="additive", period=period)})
+        
+    return decomps
+
+
 def gen_varmax_params(p_rng=(0, 0), q_rng=(0, 0), debug=False):
     """
     input: 2 2-tuples of inclusive (p, q) value ranges
@@ -93,12 +108,6 @@ def gen_varmax_params(p_rng=(0, 0), q_rng=(0, 0), debug=False):
     return order_list
 
 
-def get_plots_layout(columns=1, items=1):
-    # row, column dimension calculation
-
-    return {"rows": (math.ceil(items / columns)), "columns": columns}
-
-
 def VARMAX_optimizer(series, varmax_order, debug=False):
     """
     input: Pandas data series with pd.datetime index
@@ -111,7 +120,7 @@ def VARMAX_optimizer(series, varmax_order, debug=False):
 
     results = []
 
-    for order in tqdm(varmax_order):
+    for order in varmax_order:
         try:
             model = VARMAX(
                 series,
@@ -206,7 +215,7 @@ def ARIMA_optimizer(series, arima_order, debug=False):
 
     results = []
 
-    for order in tqdm(arima_order):
+    for order in arima_order:
         try:
             model = ARIMA(
                 series,
@@ -310,7 +319,7 @@ def SARIMA_optimizer(series, sarima_order, s=0, debug=False):
 
     results = []
 
-    for order in tqdm(sarima_order):
+    for order in sarima_order:
         if debug:
             print(order)
         try:

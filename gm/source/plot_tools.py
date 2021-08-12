@@ -21,7 +21,7 @@ def plot_histograms(df, title="Raw Data", zipcode="10001", t_range=[0, None]):
     columns = df_plot.columns.tolist()
 
     col_idx = 0
-    layout = ts_tools.get_plots_layout(columns=4, items=len(columns))
+    layout = ts_tools.get_plots_layout(num_columns=4, num_items=len(columns))
 
     fig = make_subplots(
         rows=layout["rows"],
@@ -82,14 +82,88 @@ def plot_histograms(df, title="Raw Data", zipcode="10001", t_range=[0, None]):
     return fig
 
 
-def plot_data(df, title="Raw Data", zipcode="10001", units={}, t_range=[0, None]):
-    # t_range[0] == 0 , t_range[1] == None -> include all data
-    df_plot = df.iloc[t_range[0] : t_range[1]]
+def plot_trends(df, title="Data", zipcode="01001", units={}):
+
+    idx = 0
+    cols = df.columns.tolist()
+    units_text = [value for value in units.values()]
+    layout = ts_tools.get_plots_layout(num_columns=1, num_items=len(cols))
+
+    decomps = ts_tools.get_data_decomps(df, period=12)
+
+    fig = make_subplots(
+        rows=layout["rows"],
+        cols=layout["columns"],
+        subplot_titles=cols,
+        shared_xaxes=False,
+    )
+
+    for feature, series in decomps.items():
+        fig.add_trace(
+            go.Scatter(
+                x=series.trend.index,
+                y=series.trend,
+                name=feature,
+                line=dict(width=1.5),
+                connectgaps=True,
+                showlegend=False,
+            ),
+            row=idx + 1,
+            col=layout["columns"],
+        )
+        fig.update_yaxes(
+            showgrid=False,
+            title_text=units_text[idx],
+            row=idx + 1,
+            col=layout["columns"],
+        )
+        idx += 1
+
+    fig.update_layout(
+        title=dict(
+            text=f"{title}, Zip Code: {zipcode}",
+            xanchor="center",
+            x=0.5,
+            font=dict(family="Arial", size=18),
+        ),
+        height=950,
+        autosize=True,
+        margin=dict(l=5, r=5, b=0, t=75, pad=0),
+        legend=dict(orientation="h", yanchor="bottom", y=-0.1),
+        # yaxis=dict(title=dict(standoff=0)),
+        xaxis=dict(
+            rangeselector=dict(
+                buttons=list(
+                    [
+                        # dict(count=1, label="1yr", step="year", stepmode="backward"),
+                        # dict(count=2, label="2yr", step="year", stepmode="backward"),
+                        dict(count=5, label="5yr", step="year", stepmode="backward"),
+                        dict(count=10, label="10yr", step="year", stepmode="backward"),
+                        dict(step="all"),
+                    ]
+                ),
+                bgcolor="#444444",
+                y=1.07,
+            ),
+            rangeslider=dict(visible=False),
+            type="date",
+        ),
+        plot_bgcolor=COLORS["background"],
+        paper_bgcolor=COLORS["background"],
+        font_color=COLORS["text"],
+    )
     
-    columns = df_plot.columns.tolist()
+    fig.update_xaxes(matches="x") # , rangeslider_thickness=0.1)
+
+    return fig
+
+
+def plot_data(df, title="Raw Data", zipcode="10001", units={}):
+
+    columns = df.columns.tolist()
 
     col_idx = 0
-    layout = ts_tools.get_plots_layout(columns=4, items=len(columns))
+    layout = ts_tools.get_plots_layout(num_columns=4, num_items=len(columns))
 
     fig = make_subplots(
         rows=layout["rows"],
@@ -99,13 +173,13 @@ def plot_data(df, title="Raw Data", zipcode="10001", units={}, t_range=[0, None]
     )
 
     units_text = [value for value in units.values()]
-    
+
     for _, row in enumerate(range(1, layout["rows"] + 1)):
         for _, col in enumerate(range(1, layout["columns"] + 1)):
             fig.add_trace(
                 go.Scatter(
-                    x=df_plot.index,
-                    y=df_plot[columns[col_idx]],
+                    x=df.index,
+                    y=df[columns[col_idx]],
                     name=columns[col_idx],
                     line=dict(width=1.5),
                     connectgaps=True,
@@ -136,7 +210,7 @@ def plot_data(df, title="Raw Data", zipcode="10001", units={}, t_range=[0, None]
             l=5,
             r=5,
             b=0,
-            t=75, # 100, # 75
+            t=75,  # 100, # 75
             pad=0,
         ),
         legend=dict(
@@ -172,18 +246,13 @@ def plot_data(df, title="Raw Data", zipcode="10001", units={}, t_range=[0, None]
         autosize=True,
         height=500,
     )
-    
-    fig.update_xaxes(
-        matches="x",
-        rangeslider_thickness=0.05
-    )
+
+    fig.update_xaxes(matches="x", rangeslider_thickness=0.05)
 
     return fig
 
 
-def plot_multi_line(df, title="Title", locale=[], columns=[], t_range=[0, None]):
-    # t_range[0] == 0, t_range[1] == None -> include all data
-    df_plot = df.iloc[t_range[0] : t_range[1]]
+def plot_multi_line(df, title="Title", locale=[], columns=[]):
 
     colors = ["rgb(255,0,0)", "rgb(0,255,0)", "rgb(0,0,255)"]
 
@@ -196,8 +265,8 @@ def plot_multi_line(df, title="Title", locale=[], columns=[], t_range=[0, None])
         fig.add_trace(
             go.Scatter(
                 name=label_text[idx],
-                x=df_plot.index,
-                y=df_plot[label],
+                x=df.index,
+                y=df[label],
                 mode="lines",
                 line=dict(color=colors[idx], width=2),
                 connectgaps=True,
@@ -251,10 +320,7 @@ def plot_multi_line(df, title="Title", locale=[], columns=[], t_range=[0, None])
         autosize=True,
         height=300,
     )
-    
-    fig.update_xaxes(
-        rangeslider_thickness=0.10
-    )
-    
+
+    fig.update_xaxes(rangeslider_thickness=0.10)
 
     return fig
