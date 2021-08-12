@@ -2,9 +2,9 @@
     "log_dir": "logs/",
     "db_dir": "../../data/db/",
     "data_dir": "../data/",
-    "db_dsire": "dsire_2021_06.db",
-    "berkeley_1":"TTS_LBNL_public_file_19-Oct-2020_p1.csv",
-    "berkeley_2":"TTS_LBNL_public_file_19-Oct-2020_p2.csv",
+    "db_dsire": "dsire.db",
+    "berkeley_1": "TTS_LBNL_public_file_19-Oct-2020_p1.csv",
+    "berkeley_2": "TTS_LBNL_public_file_19-Oct-2020_p2.csv",
     "proj_origin_lon": -80.519349,
     "proj_origin_lat": 39.721431,
     "origin_lon": -80.519349,
@@ -22,6 +22,16 @@
     "inc_multiplier": 2.0,
     "inc_lon": 0.01210225,
     "inc_lat": 0.0089935,
-    "filter_cols":["installation_date", "system_size_DC", "total_installed_price", "rebate_or_grant", "zip_code", "battery_rated_capacity_kWh", "ground_mounted", "third_party_owned"]
-    
+    "filter_cols": [
+        "installation_date",
+        "system_size_DC",
+        "total_installed_price",
+        "rebate_or_grant",
+        "zip_code",
+        "battery_rated_capacity_kWh",
+        "ground_mounted",
+        "third_party_owned"
+    ],
+    "min_date": "30-Jan-1998 (00:00:00.000000)",
+    "max_date": "31-Dec-2019 (00:00:00.000000)"
 }
