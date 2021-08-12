@@ -4,7 +4,7 @@ import dash_core_components as dcc
 import dash_html_components as html
 import logzero
 from app import app
-from apps import app1, app2 # , app3
+from apps import app1, app2, app3
 from dash.dependencies import Input, Output
 from dash_table import DataTable
 from logzero import logger

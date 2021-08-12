@@ -200,13 +200,13 @@ def graph_output(db_filename, zipcode):
     )
     logger.info(f"app2 passed {title1}")
 
-    title2 = "Trend 2"
-    fig2 = plot_tools.plot_histograms(
-        df,
-        title=title2,
-        zipcode=zipcode,
-    )
-    logger.info(f"app2 passed {title2}")
+    #     title2 = "Trend 2"
+    #     fig2 = plot_tools.plot_histograms(
+    #         df,
+    #         title=title2,
+    #         zipcode=zipcode,
+    #     )
+    #     logger.info(f"app2 passed {title2}")
 
     #     title3 = "Meteorological Conditions"
     #     fig3 = plot_tools.plot_multi_line(

@@ -109,7 +109,7 @@ layout_app3 = html.Div(
             dbc.Col(
                 [
                     dcc.Graph(id="app3-graph-trend-1"),
-                    # dcc.Graph(id="app3-graph-trend-2"),
+                    dcc.Graph(id="app3-graph-trend-2"),
                 ]
             )
         ),
@@ -149,11 +149,11 @@ def set_zipcode_value(options):
 
 
 @app.callback(
-    Output("app3-graph-trend-1", "figure"),
-#     [
-#         Output("app3-graph-trend-1", "figure"),
-#         Output("app3-graph-trend-2", "figure"),
-#     ],
+    # Output("app3-graph-trend-1", "figure"),
+    [
+        Output("app3-graph-trend-1", "figure"),
+        Output("app3-graph-trend-2", "figure"),
+    ],
     [
         Input("app3-dd-db-selection", "value"),
         Input("app3-dd-zipcode-selection", "value"),
@@ -200,7 +200,7 @@ def graph_output(db_filename, zipcode):
     )
     logger.info(f"app3 passed {title1}")
 
-    title2 = "Trend 2"
+    title2 = "Histograms"
     fig2 = plot_tools.plot_histograms(
         df,
         title=title2,
@@ -208,12 +208,5 @@ def graph_output(db_filename, zipcode):
     )
     logger.info(f"app3 passed {title2}")
 
-    #     title3 = "Meteorological Conditions"
-    #     fig3 = plot_tools.plot_multi_line(
-    #         df,
-    #         title=title3,
-    #         locale=locale_data,
-    #         columns=meteoro_fields,
-    #     )
 
-    return fig1 # , fig2  # , fig3
+    return fig1, fig2

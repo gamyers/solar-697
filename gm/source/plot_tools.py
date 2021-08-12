@@ -8,6 +8,8 @@ pd.set_option("plotting.backend", "plotly")
 COLORS = {
     "background": "#111111",
     "text": "#7FDBFF",
+    "gridcolor_dark": "#555555",
+    "button_background": "#555555",
     "line1": "rgb(255,0,0)",
     "line2": "rgb(0,255,0)",
     "line3": "rgb(0,0,255)",
@@ -104,7 +106,7 @@ def plot_trends(df, title="Data", zipcode="01001", units={}):
                 x=series.trend.index,
                 y=series.trend,
                 name=feature,
-                line=dict(width=1.5),
+                line=dict(width=4),
                 connectgaps=True,
                 showlegend=False,
             ),
@@ -112,7 +114,8 @@ def plot_trends(df, title="Data", zipcode="01001", units={}):
             col=layout["columns"],
         )
         fig.update_yaxes(
-            showgrid=False,
+            showgrid=True, # False,
+            gridcolor=COLORS["gridcolor_dark"],
             title_text=units_text[idx],
             row=idx + 1,
             col=layout["columns"],
@@ -142,7 +145,7 @@ def plot_trends(df, title="Data", zipcode="01001", units={}):
                         dict(step="all"),
                     ]
                 ),
-                bgcolor="#444444",
+                bgcolor=COLORS["button_background"],
                 y=1.07,
             ),
             rangeslider=dict(visible=False),
