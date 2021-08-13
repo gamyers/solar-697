@@ -1,13 +1,8 @@
-#!/usr/bin/env python
-# coding: utf-8
+#!/usr/bin/env python3
 
 import os
 import sqlite3
 import sys
-
-sys.path.append("../../sql")
-sys.path.append("../source")
-sys.path.append("../.")
 
 import dash
 import dash_bootstrap_components as dbc
@@ -16,35 +11,28 @@ import dash_html_components as html
 import logzero
 import numpy as np
 import pandas as pd
-import plot_tools
 import plotly.graph_objects as go
-import queries
-import ts_tools
 import yaml
 from app import app
 from dash.dependencies import Input, Output
 from dash_table import DataTable
 from logzero import logger
-from yaml import dump, load, safe_load
+
+# from yaml import dump, load, safe_load
+
+sys.path.append("../../sql")
+sys.path.append("../source")
+sys.path.append("../.")
+import plot_tools
+import queries
+import ts_tools
 
 pd.set_option("plotting.backend", "plotly")
-
-log_path = "logs/"
-log_file = "dashboard_app.log"
-
-logzero.logfile(
-    log_path + log_file,
-    maxBytes=1e5,
-    backupCount=1,
-    disableStderrLogger=True,
-)
-logger.info(f"{log_path}, {log_file}\n")
-
 
 configs = None
 try:
     with open("../configs/config.yml", "r") as config_in:
-        configs = load(config_in, Loader=yaml.SafeLoader)
+        configs = yaml.load(config_in, Loader=yaml.SafeLoader)
         logger.info(f"{configs}\n")
 except:
     logger.error(f"config file open failure.")

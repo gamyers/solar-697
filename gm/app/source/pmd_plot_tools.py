@@ -2,10 +2,23 @@
 
 import logzero
 import pandas as pd
+import numpy as np
 import plotly.graph_objects as go
 import ts_tools
 from logzero import logger
 from plotly.subplots import make_subplots
+
+# # Connect to logzero log file
+# log_path = "logs/"
+# log_file = "dashboard_app.log"
+
+# logzero.logfile(
+#     log_path + log_file,
+#     maxBytes=1e5,
+#     backupCount=1,
+#     disableStderrLogger=True,
+# )
+# logger.info(f"{log_path}, {log_file}\n")
 
 pd.set_option("plotting.backend", "plotly")
 
@@ -20,20 +33,18 @@ COLORS = {
 }
 
 
-def plot_sarima(train, test, forecast, title="Title", zipcode="01001"):
-
-    actual = test
-    rmse = np.sqrt(np.mean((forecast - actual) ** 2))
+def plot_forecast(train, test, forecast, title="Title", zipcode="01001"):
+    
+    colors = (("blue", 0.5), ("orange", 0.9), ("green", 0.75))
+    
+    # actual = test
+    rmse = np.sqrt(np.mean((forecast - test) ** 2))
 
     data_names = ("Train", "Actual", "Forecast")
-    data_streams = [train, actual, forecast]
-
-    colors = (("blue", 0.5), ("orange", 0.9), ("green", 0.75))
+    data_streams = [train, test, forecast]
 
     fig = go.Figure()
-
-    columns[forecast_on_idx]
-
+    
     for idx, data in enumerate(data_streams):
         fig.add_trace(
             go.Scatter(
@@ -49,9 +60,7 @@ def plot_sarima(train, test, forecast, title="Title", zipcode="01001"):
 
     fig.update_layout(
         title=dict(
-            text=(
-                f"Zip Code {distinct_zipcodes[zipcode_index]}<br>{columns[forecast_on_idx]} {len(forecast)}-Month Forecast<br>RMSE: {rmse:0.3f}"
-            ),
+            text=(f"Zip Code {zipcode}<br>{len(forecast)}-Month Forecast"), # <br>RMSE: {rmse:0.3f}"),
             xanchor="center",
             x=0.5,
             font=dict(
@@ -88,23 +97,6 @@ def plot_sarima(train, test, forecast, title="Title", zipcode="01001"):
             rangeslider=dict(visible=True),
             type="date",
         ),
-#         updatemenus=[
-#             dict(
-#                 buttons=list(
-#                     [
-#                         dict(args=["type", "surface"], label="3D Surface", method="restyle"),
-#                         dict(args=["type", "heatmap"], label="Heatmap", method="restyle"),
-#                     ]
-#                 ),
-#                 direction="down",
-#                 pad={"r": 10, "t": 10},
-#                 showactive=True,
-#                 x=0.1,
-#                 xanchor="left",
-#                 y=1.1,
-#                 yanchor="top",
-#             ),
-#         ],
     )
 
     return fig

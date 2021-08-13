@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import dash
 import dash_bootstrap_components as dbc
 import dash_core_components as dcc
@@ -9,6 +11,7 @@ from dash.dependencies import Input, Output
 from dash_table import DataTable
 from logzero import logger
 
+# Connect to logzero log file
 log_path = "logs/"
 log_file = "dashboard_app.log"
 
@@ -98,6 +101,6 @@ if __name__ == "__main__":
     app.run_server(
         host="192.168.64.164",
         port="8088",
-        use_reloader=False,
-        debug=True,
+        use_reloader=True, # False, # 
+        debug=True, # False, # 
     )

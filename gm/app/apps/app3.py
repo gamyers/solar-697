@@ -1,14 +1,8 @@
-#!/usr/bin/env python
-# coding: utf-8
+#!/usr/bin/env python3
 
 import os
-
 import sqlite3
 import sys
-
-sys.path.append("../../sql")
-sys.path.append("../source")
-sys.path.append("../.")
 
 import dash
 import dash_bootstrap_components as dbc
@@ -17,31 +11,28 @@ import dash_html_components as html
 import logzero
 import numpy as np
 import pandas as pd
-import plot_tools
 import plotly.graph_objects as go
-import queries
-import ts_tools
 import yaml
 from app import app
 from dash.dependencies import Input, Output
 from dash_table import DataTable
 from logzero import logger
+from pmdarima import model_selection
 from yaml import dump, load, safe_load
 
+# app source path additions
+sys.path.append("./source")
+sys.path.append("../../sql")
+sys.path.append("../source")
+sys.path.append("../.")
+
+import plot_tools
+import pmd_plot_tools
+import pmd_tools
+import queries
+import ts_tools
+
 pd.set_option("plotting.backend", "plotly")
-
-# Connect to logzero log file
-log_path = "logs/"
-log_file = "dashboard_app.log"
-
-logzero.logfile(
-    log_path + log_file,
-    maxBytes=1e5,
-    backupCount=1,
-    disableStderrLogger=True,
-)
-logger.info(f"{log_path}, {log_file}\n")
-
 
 # open and retrieve configuration information
 configs = None
@@ -102,14 +93,21 @@ layout_app3 = html.Div(
                     ),
                     width={"size": 2, "offset": 1},
                 ),
+                dbc.Col(
+                    dcc.Dropdown(
+                        id="app3-dd-feature-selection",
+                        placeholder="Select a Feature",
+                    ),
+                    width={"size": 2, "offset": 1},
+                ),
             ],
             no_gutters=False,
         ),
         dbc.Row(
             dbc.Col(
                 [
-                    dcc.Graph(id="app3-graph-trend-1"),
-                    dcc.Graph(id="app3-graph-trend-2"),
+                    dcc.Graph(id="app3-graph-arima-1"),
+                    # dcc.Graph(id="app3-graph-trend-2"),
                 ]
             )
         ),
@@ -146,17 +144,49 @@ def get_zipcodes(file_name):
 def set_zipcode_value(options):
     logger.info(f"app3 zipcode selected: {options[0]['value']}")
     return options[0]["value"]
+#---------------------------------------------------------------
+
+@app.callback(
+    Output("app3-dd-zipcode-selection", "options"),
+    [
+        Input("app3-dd-feature-selection", "value"),
+    ],
+)
+def get_featuress(columns):
+    logger.info(f"get_features callback: {}")
+
+    conn = ts_tools.get_db_connection(db_path, file_name)
+    zipcodes = ts_tools.get_db_zipcodes(conn)
+    conn.close()
+
+    logger.info(f"app3 zipcodes retrieved\n{zipcodes}")
+
+    # return the list object to properly populate the dropdown!
+    return [{"label": zipcode, "value": zipcode} for zipcode in zipcodes]
 
 
 @app.callback(
-    # Output("app3-graph-trend-1", "figure"),
+    Output("app3-dd-feature-selection", "value"),
     [
-        Output("app3-graph-trend-1", "figure"),
-        Output("app3-graph-trend-2", "figure"),
+        Input("app3-dd-feature-selection", "options"),
     ],
+)
+def set_zipcode_value(options):
+    logger.info(f"app3 zipcode selected: {options[0]['value']}")
+    return options[0]["value"]
+
+#---------------------------------------------------------------
+@app.callback(
+    Output("app3-graph-arima-1", "figure"),
+    #     [
+    #         Output("app3-graph-arima-1", "figure"),
+    #         Output("app3-graph-arima-2", "figure"),
+    #     ],
     [
         Input("app3-dd-db-selection", "value"),
         Input("app3-dd-zipcode-selection", "value"),
+        # Input("app3-dd-feature-selection", "value"),
+        # Input("app3-dd-fc-period-selection", "value"),
     ],
 )
 def graph_output(db_filename, zipcode):
@@ -190,23 +220,45 @@ def graph_output(db_filename, zipcode):
         logger.ifno(f"app3 Made else: {db_filename}, {zipcode}")
 
     logger.info(f"app3 passed if/elif/else")
+
+    test_len_yrs = 5
+    test_periods = 5 * 12
+    fc_periods = 5 * 12
+    feature = "GHI"
+    logger.info(f"app3 parameters: {test_len_yrs}, {test_periods}, {fc_periods}, {feature}")
     
-    title1 = "Data Trends"
-    fig1 = plot_tools.plot_trends(
-        df,
+    train, test = model_selection.train_test_split(df, test_size=test_periods)
+    logger.info(train.tail(5))
+    logger.info(test.head(5))
+
+    model = pmd_tools.get_arima_fft_model(train[feature], fc_periods)
+    logger.info(model)
+    
+    forecast, conf_int = model.predict(n_periods=fc_periods, return_conf_int=True)
+    forecast = pd.Series(forecast, index=test.index)
+    
+    logger.info(f"Len of train {len(train)}")
+    logger.info(f"Len of test {len(test)}")
+    logger.info(f"Len of forecast {len(forecast)}")
+    logger.info(f"forecast: {forecast.head(10)}")    
+
+    title1 = f"{feature} Forecast"
+    fig1 = pmd_plot_tools.plot_forecast(
+        train[feature],
+        test[feature],
+        forecast,
         title=title1,
         zipcode=zipcode,
-        units=data_units,
+        # units=data_units,
     )
     logger.info(f"app3 passed {title1}")
 
-    title2 = "Histograms"
-    fig2 = plot_tools.plot_histograms(
-        df,
-        title=title2,
-        zipcode=zipcode,
-    )
-    logger.info(f"app3 passed {title2}")
+    #     title2 = "Histograms"
+    #     fig2 = plot_tools.plot_histograms(
+    #         df,
+    #         title=title2,
+    #         zipcode=zipcode,
+    #     )
+    #     logger.info(f"app3 passed {title2}")
 
-
-    return fig1, fig2
+    return fig1  # , fig2
