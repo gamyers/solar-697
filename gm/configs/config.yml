@@ -66,6 +66,23 @@ drop_columns:
   - "GHI_UV_wd"
   - "GHI_UV_nw"
 #
+irradiance_columns:
+  - "Clearsky_DHI"
+  - "DHI"
+  - "Clearsky_DNI"
+  - "DNI"
+  - "Clearsky_GHI"
+  - "GHI"
+#
+COLORS:
+  "background": "#111111"
+  "text": "#7FDBFF"
+  "gridcolor_dark": "#555555"
+  "button_background": "#555555"
+  "line1": "rgb(255,0,0)"
+  "line2": "rgb(0,255,0)"
+  "line3": "rgb(0,0,255)"
+#
 file_paths:
   data_path: "../../data/"
   db_path: "../../data/db/"
@@ -75,6 +92,7 @@ file_names:
   data_file_usc: "2020_Gaz_zcta_national.txt"
   data_file_zips: "zipcodes.txt"
   db_file_gzc: "geo_zipcodes.db"
+  default_db: "nsrdb_monthly.db"
 # 
 table_names:
   db_table1: "nsrdb"

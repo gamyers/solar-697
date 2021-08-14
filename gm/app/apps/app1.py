@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-import os
 import sqlite3
 import sys
 
@@ -18,64 +17,38 @@ from dash.dependencies import Input, Output
 from dash_table import DataTable
 from logzero import logger
 
-# from yaml import dump, load, safe_load
-
 sys.path.append("../../sql")
-sys.path.append("../source")
-sys.path.append("../.")
-import plot_tools
 import queries
+
+sys.path.append("./source")
+import plot_tools
 import ts_tools
 
-pd.set_option("plotting.backend", "plotly")
-
-configs = None
+# open and retrieve configuration data
 try:
-    with open("../configs/config.yml", "r") as config_in:
-        configs = yaml.load(config_in, Loader=yaml.SafeLoader)
-        logger.info(f"{configs}\n")
+    with open("config.yml", "r") as config_in:
+        cfg = yaml.load(config_in, Loader=yaml.SafeLoader)
+        logger.info(f"{cfg}\n")
 except:
     logger.error(f"config file open failure.")
     exit(1)
 
-cfg_vars = configs["url_variables"]
-logger.info(f"variables: {cfg_vars}\n")
-
-years = configs["request_years"]
-logger.info(f"years: {years}\n")
-
-db_path = configs["file_paths"]["db_path"]
-
-city = configs["location_info"]["city"]
-state = configs["location_info"]["state"]
-db_file = city + "_" + state + ".db"
-db_file = "nsrdb_monthly.db"
-
-db_table1 = configs["table_names"]["db_table1"]
-db_table2 = configs["table_names"]["db_table2"]
-
-logger.info(f"{db_path}, {db_file}")
-
-data_units = configs["data_units"]
-meteoro_fields = configs["meteorological_fields"]
-viz_pages = configs["viz_page_options"]
-
-nrows = configs["num_rows"][0]
-logger.info(f"number of rows: {nrows}\n")
-
+db_path = cfg["file_paths"]["db_path"]
 db_files = ts_tools.get_db_files(db_path)
 logger.info(f"DB Path: {db_path}\n{db_files}\n")
 
 
+# --------------------------begin layout--------------------------#
 layout_app1 = html.Div(
     [
+        # Dropdown row 0
         dbc.Row(
             [
                 dbc.Col(
                     dcc.Dropdown(
                         id="dd-db-selection",
                         options=[{"label": db, "value": db} for db in db_files],
-                        value="nsrdb_monthly.db",
+                        value=cfg["file_names"]["default_db"],
                         placeholder="Select a database",
                     ),
                     width={"size": 2, "offset": 0},
@@ -87,44 +60,39 @@ layout_app1 = html.Div(
                     ),
                     width={"size": 2, "offset": 1},
                 ),
-
             ],
-            no_gutters=False,
         ),
+        # Plots row 1
         dbc.Row(
             [
                 dbc.Col(
                     [
-                        html.Label(
+                        html.H6(
                             "Data View",
                             style={"display": "inline-block", "textAlign": "center"},
                         ),
-                        dcc.Graph(
-                            id="graph-data-view",
-                        ),
+                        dcc.Graph(id="graph-data-view"),
                     ],
-                    width={"size": 6, "offset": 0},
+                    width={"size": 6},
                 ),
                 dbc.Col(
                     [
-                        html.Label(
+                        html.H6(
                             "Distribution View",
                             style={"display": "inline-block", "textAlign": "center"},
                         ),
-                        dcc.Graph(
-                            id="graph-dist-view",
-                        ),
+                        dcc.Graph(id="graph-dist-view"),
                     ],
                     width={"size": 5},
                 ),
             ],
-            no_gutters=True,
         ),
+        # Plots row 2
         dbc.Row(
             [
                 dbc.Col(
                     [
-                        html.Label(
+                        html.H6(
                             "Meteorological View",
                             style={"display": "inline-block", "textAlign": "center"},
                         ),
@@ -136,7 +104,7 @@ layout_app1 = html.Div(
                 ),
                 dbc.Col(
                     [
-                        html.Label(
+                        html.H6(
                             "Desciptive Statistics",
                             style={
                                 "display": "inline-block",
@@ -165,11 +133,9 @@ layout_app1 = html.Div(
         ),
     ],
 )
-# end of layout
 
-#
 
-# begin callbacks
+# --------------------------begin callbacks--------------------------#
 @app.callback(
     Output("dd-zipcode-selection", "options"),
     [
@@ -184,11 +150,11 @@ def get_zipcodes(file_name):
     conn.close()
 
     logger.info(f"app1 zipcodes retrieved\n{zipcodes}")
-    
+
     # return the list object to properly populate the dropdown!
     return [{"label": zipcode, "value": zipcode} for zipcode in zipcodes]
 
-
+#-------------------------------------------------------------------#
 @app.callback(
     Output("dd-zipcode-selection", "value"),
     [
@@ -199,7 +165,7 @@ def set_zipcode_value(options):
     logger.info(f"app1 zipcode selected: {options[0]['value']}")
     return options[0]["value"]
 
-
+#-------------------------------------------------------------------#
 @app.callback(
     [
         Output("graph-data-view", "figure"),
@@ -241,20 +207,19 @@ def graph_output(db_filename, zipcode):
         locale_data = ts_tools.get_locale_data(conn, zipcode)
         df = ts_tools.get_irr_data(conn, zipcode)
         logger.info(f"app1 Made else: {db_filename}, {zipcode}")
-        
-    logger.info(f"app1 passed if/elif/else")        
+
+    logger.info(f"app1 passed if/elif/else")
 
     df_desc = df.describe().transpose().round(decimals=2).reset_index(drop=False)
+    df_desc.rename(columns={"index": "feature"}, inplace=True)
+    df_desc.insert(loc=1, column="unit", value=[value for value in cfg["data_units"].values()])
     desc_columns = [{"id": col, "name": col} for col in df_desc.columns]
-    
+
     logger.info(f"app1 passed df_desc")
 
     title1 = "Irradiance Data"
-    fig1 = plot_tools.plot_data(
-        df,
-        title=title1,
-        zipcode=zipcode,
-        units=data_units,
+    fig1 = plot_tools.plot_irradiance(
+        df, title=title1, zipcode=zipcode, irr_columns=cfg["irradiance_columns"], locale=locale_data
     )
     logger.info(f"app1 passed {title1}")
 
@@ -271,10 +236,8 @@ def graph_output(db_filename, zipcode):
         df,
         title=title3,
         locale=locale_data,
-        columns=meteoro_fields,
+        columns=cfg["meteorological_fields"],
     )
     logger.info(f"app1 passed {title3}")
-    
-    logger.info(f"app1 graph_output return")
 
     return fig1, fig2, fig3, df_desc.to_dict("records"), desc_columns
