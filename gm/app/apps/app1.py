@@ -75,7 +75,7 @@ layout_app1 = html.Div(
                     dcc.Dropdown(
                         id="dd-db-selection",
                         options=[{"label": db, "value": db} for db in db_files],
-                        value="nsrdb_monthly.db",  # db_files[0],
+                        value="nsrdb_monthly.db",
                         placeholder="Select a database",
                     ),
                     width={"size": 2, "offset": 0},

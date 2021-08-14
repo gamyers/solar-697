@@ -8,26 +8,6 @@ location_info:
   state: "AzCaFlNyTxWaWi"
   # state: "OkCa"
 #
-data_units:
-  Clearsky_DNI: "Wh/m^2"
-  DNI: "Wh/m^2"
-  Clearsky_GHI: "Wh/m^2"
-  GHI: "Wh/m^2"
-  Temperature: "°C"
-  Relative_Humidity: "%RH"
-  Precipitable_Water: "mm"
-  Wind_Speed: "m/s" 
-#
-meteorological_fields:
-  - "Temperature"
-  - "Relative_Humidity"
-  - "Precipitable_Water"
-#
-viz_page_options:
-  - "EDA"
-  - "Decomposition"
-  - "Forecasting"
-#
 request_years:
   - 2020
   - 2019
@@ -52,6 +32,39 @@ request_years:
   - 2000
   - 1999
   - 1998
+#
+data_units:
+  Clearsky_DHI: "Wh/m^2"
+  DHI: "Wh/m^2"
+  Clearsky_DNI: "Wh/m^2"
+  DNI: "Wh/m^2"
+  Clearsky_GHI: "Wh/m^2"
+  GHI: "Wh/m^2"
+  Temperature: "°C"
+  Dew_Point: "°C"
+  Relative_Humidity: "%RH"
+  Precipitable_Water: "mm"
+  Pressure: "mbar"
+  Wind_Speed: "m/s" 
+#
+meteorological_fields:
+  - "Temperature"
+  - "Relative_Humidity"
+  - "Dew_Point"
+  - "Precipitable_Water"
+#
+viz_page_options:
+  - "EDA"
+  - "Decomposition"
+  - "Forecasting"
+#
+drop_columns:
+  - "id"
+  - "location_id"
+  - "zipcode"
+  - "date_time"
+  - "GHI_UV_wd"
+  - "GHI_UV_nw"
 #
 file_paths:
   data_path: "../../data/"

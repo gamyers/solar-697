@@ -88,23 +88,23 @@ def plot_sarima(train, test, forecast, title="Title", zipcode="01001"):
             rangeslider=dict(visible=True),
             type="date",
         ),
-#         updatemenus=[
-#             dict(
-#                 buttons=list(
-#                     [
-#                         dict(args=["type", "surface"], label="3D Surface", method="restyle"),
-#                         dict(args=["type", "heatmap"], label="Heatmap", method="restyle"),
-#                     ]
-#                 ),
-#                 direction="down",
-#                 pad={"r": 10, "t": 10},
-#                 showactive=True,
-#                 x=0.1,
-#                 xanchor="left",
-#                 y=1.1,
-#                 yanchor="top",
-#             ),
-#         ],
+        #         updatemenus=[
+        #             dict(
+        #                 buttons=list(
+        #                     [
+        #                         dict(args=["type", "surface"], label="3D Surface", method="restyle"),
+        #                         dict(args=["type", "heatmap"], label="Heatmap", method="restyle"),
+        #                     ]
+        #                 ),
+        #                 direction="down",
+        #                 pad={"r": 10, "t": 10},
+        #                 showactive=True,
+        #                 x=0.1,
+        #                 xanchor="left",
+        #                 y=1.1,
+        #                 yanchor="top",
+        #             ),
+        #         ],
     )
 
     return fig
@@ -258,6 +258,7 @@ def plot_trends(df, title="Data", zipcode="01001", units={}):
 def plot_data(df, title="Raw Data", zipcode="10001", units={}):
 
     columns = df.columns.tolist()
+    logger.info(f"plot_data columns: {columns}")
 
     col_idx = 0
     layout = ts_tools.get_plots_layout(num_columns=4, num_items=len(columns))
@@ -300,15 +301,18 @@ def plot_data(df, title="Raw Data", zipcode="10001", units={}):
             x=0.5,
             font=dict(
                 family="Arial",
-                size=18,
+                size=12,
             ),
+        ),
+        font=dict(
+            size=12,
         ),
         margin=dict(
             l=5,
             r=5,
             b=0,
-            t=75,  # 100, # 75
-            pad=0,
+            t=75,
+            pad=10,
         ),
         legend=dict(
             orientation="h",
@@ -351,9 +355,8 @@ def plot_data(df, title="Raw Data", zipcode="10001", units={}):
 
 def plot_multi_line(df, title="Title", locale=[], columns=[]):
 
-    colors = ["rgb(255,0,0)", "rgb(0,255,0)", "rgb(0,0,255)"]
+    colors = (("red", 0.75), ("yellow", 0.75), ("green", 0.80), ("blue", 0.90))
 
-    # labels = columns
     label_text = [label.replace("_", " ") for label in columns]
 
     fig = go.Figure()
@@ -365,7 +368,8 @@ def plot_multi_line(df, title="Title", locale=[], columns=[]):
                 x=df.index,
                 y=df[label],
                 mode="lines",
-                line=dict(color=colors[idx], width=2),
+                line=dict(color=colors[idx][0], width=2),
+                opacity=colors[idx][1],
                 connectgaps=True,
                 showlegend=True,
             )
@@ -391,7 +395,7 @@ def plot_multi_line(df, title="Title", locale=[], columns=[]):
         legend=dict(
             orientation="h",
             yanchor="top",  # "bottom",
-            y=1.2,
+            y=1.1,
             x=0.375,
         ),
         xaxis=dict(
@@ -415,7 +419,7 @@ def plot_multi_line(df, title="Title", locale=[], columns=[]):
         paper_bgcolor=COLORS["background"],
         font_color=COLORS["text"],
         autosize=True,
-        height=300,
+        height=400,
     )
 
     fig.update_xaxes(rangeslider_thickness=0.10)
