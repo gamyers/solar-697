@@ -2,18 +2,24 @@ select_nsr_rows = """
 SELECT date_time,
 -- year, month, day, 
 -- zipcode,
--- Clearsky_DHI, DHI,
+Clearsky_DHI, DHI,
 Clearsky_DNI, DNI,
 Clearsky_GHI, GHI,
 Temperature,
+Dew_Point,
 Relative_Humidity,
 Precipitable_Water,
--- Wind_Direction,
+Pressure,
 Wind_Speed
+-- Wind_Direction,
 from nsrdb
 where zipcode = :zipcode
 -- and not (month = 2 and day = 29)
 ;
+"""
+
+select_column_names = """
+SELECT name FROM PRAGMA_TABLE_INFO(:table_name);
 """
 
 select_locale_data = """

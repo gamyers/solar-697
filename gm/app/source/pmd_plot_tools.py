@@ -39,6 +39,7 @@ def plot_forecast(train, test, forecast, title="Title", zipcode="01001"):
     
     # actual = test
     rmse = np.sqrt(np.mean((forecast - test) ** 2))
+    logger.info(f"RMSE: {rmse}")
 
     data_names = ("Train", "Actual", "Forecast")
     data_streams = [train, test, forecast]
@@ -60,7 +61,7 @@ def plot_forecast(train, test, forecast, title="Title", zipcode="01001"):
 
     fig.update_layout(
         title=dict(
-            text=(f"Zip Code {zipcode}<br>{len(forecast)}-Month Forecast"), # <br>RMSE: {rmse:0.3f}"),
+            text=(f"{title} {len(forecast)}-Month Forecast<br>Zip Code {zipcode}<br>RMSE: {rmse:0.3f}"),
             xanchor="center",
             x=0.5,
             font=dict(

@@ -35,6 +35,14 @@ def get_db_zipcodes(conn):
     return zipcodes
 
 
+def get_column_names(conn, table_name):
+    cursor = conn.cursor()
+    cursor.execute(queries.select_column_names, {"table_name": table_name})
+    names = cursor.fetchall()
+    names = [name[0] for name in names]
+    logger.info(f"Column Names: {names}")
+    return names
+
 def get_locale_data(conn, zipcode):
     cursor = conn.cursor()
     cursor.execute(queries.select_locale_data, {"zipcode": zipcode})
