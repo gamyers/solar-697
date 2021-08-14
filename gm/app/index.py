@@ -101,6 +101,6 @@ if __name__ == "__main__":
     app.run_server(
         host="192.168.64.164",
         port="8088",
-        use_reloader=True, # False, # 
-        debug=True, # False, # 
+        use_reloader=True,  # False, #
+        debug=True,  # False, #
     )

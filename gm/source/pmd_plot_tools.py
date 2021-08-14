@@ -5,33 +5,29 @@ import pandas as pd
 import numpy as np
 import plotly.graph_objects as go
 import ts_tools
+import yaml
 from logzero import logger
 from plotly.subplots import make_subplots
 
-# # Connect to logzero log file
-# log_path = "logs/"
-# log_file = "dashboard_app.log"
+# Connect to logzero log file
+log_path = "logs/"
+log_file = "dashboard_app.log"
+logzero.logfile(
+    log_path + log_file,
+    maxBytes=1e5,
+    backupCount=1,
+    disableStderrLogger=True,
+)
+logger.info(f"pmd_plot_tools logger initialized")
 
-# logzero.logfile(
-#     log_path + log_file,
-#     maxBytes=1e5,
-#     backupCount=1,
-#     disableStderrLogger=True,
-# )
-# logger.info(f"{log_path}, {log_file}\n")
-
-pd.set_option("plotting.backend", "plotly")
-
-COLORS = {
-    "background": "#111111",
-    "text": "#7FDBFF",
-    "gridcolor_dark": "#555555",
-    "button_background": "#555555",
-    "line1": "rgb(255,0,0)",
-    "line2": "rgb(0,255,0)",
-    "line3": "rgb(0,0,255)",
-}
-
+configs = None
+try:
+    with open("../configs/config.yml", "r") as config_in:
+        configs = yaml.load(config_in, Loader=yaml.SafeLoader)
+        logger.info(f"{configs}\n")
+except:
+    logger.error(f"config file open failure.")
+    exit(1)
 
 def plot_forecast(train, test, forecast, title="Title", zipcode="01001"):
     

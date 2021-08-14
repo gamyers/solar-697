@@ -1,0 +1,106 @@
+# these columns dropped from visualization use
+drop_columns:
+  - "id"
+  - "location_id"
+  - "zipcode"
+  - "date_time"
+  - "GHI_UV_wd"
+  - "GHI_UV_nw"
+#
+irradiance_columns:
+  - "Clearsky_DHI"
+  - "DHI"
+  - "Clearsky_DNI"
+  - "DNI"
+  - "Clearsky_GHI"
+  - "GHI"
+#
+data_units:
+  Clearsky_DHI: "Wh/m^2"
+  DHI: "Wh/m^2"
+  Clearsky_DNI: "Wh/m^2"
+  DNI: "Wh/m^2"
+  Clearsky_GHI: "Wh/m^2"
+  GHI: "Wh/m^2"
+  Temperature: "°C"
+  Dew_Point: "°C"
+  Relative_Humidity: "%RH"
+  Precipitable_Water: "mm"
+  Pressure: "mbar"
+  Wind_Speed: "m/s" 
+#
+meteorological_fields:
+  - "Temperature"
+  - "Relative_Humidity"
+  - "Dew_Point"
+  - "Precipitable_Water"
+#
+COLORS:
+  "background": "#111111"
+  "text": "#7FDBFF"
+  "gridcolor_dark": "#555555"
+  "button_background": "#555555"
+  # "line1": "rgb(255,0,0)"
+  # "line2": "rgb(0,255,0)"
+  # "line3": "rgb(0,0,255)"
+#
+lstm_cfg:
+  data_units: "M" # "D"
+  period: 12
+  periods_train: 16
+  periods_val: 5
+  periods_test: 2
+  min_max_lower: -1
+  min_max_upper: 1
+#
+file_paths:
+  data_path: "../../data/"
+  db_path: "../../data/db/"
+#
+file_names:
+  db_file_gzc: "geo_zipcodes.db"
+  default_db: "nsrdb_monthly.db"
+# 
+table_names:
+  db_table1: "nsrdb"
+  db_table2: "geo_zipcodes"
+#
+time_index:
+  true: 1
+  false: 0
+#
+location_info:
+  city: ""
+  # city: "tulsa"
+  # city: "okc"
+  # city: "chino"
+  # state: "ok"
+  # state: "ca"
+  state: "AzCaFlNyTxWaWi"
+  # state: "OkCa"
+#
+request_years:
+  - 2020
+  - 2019
+  - 2018
+  - 2017
+  - 2016
+  - 2015
+  - 2014
+  - 2013
+  - 2012
+  - 2011
+  - 2010
+  - 2009
+  - 2008
+  - 2007
+  - 2006
+  - 2005
+  - 2004
+  - 2003
+  - 2002
+  - 2001
+  - 2000
+  - 1999
+  - 1998
+#

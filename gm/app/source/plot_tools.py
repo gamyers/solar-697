@@ -1,78 +1,74 @@
 #!/usr/bin/env python3
 
 import logzero
+import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
 import ts_tools
+import yaml
 from logzero import logger
 from plotly.subplots import make_subplots
 
-pd.set_option("plotting.backend", "plotly")
+# Connect to logzero log file
+log_path = "logs/"
+log_file = "dashboard_app.log"
+logzero.logfile(
+    log_path + log_file,
+    maxBytes=1e5,
+    backupCount=1,
+    disableStderrLogger=True,
+)
+logger.info(f"plot_tools logger initialized")
 
-COLORS = {
-    "background": "#111111",
-    "text": "#7FDBFF",
-    "gridcolor_dark": "#555555",
-    "button_background": "#555555",
-    "line1": "rgb(255,0,0)",
-    "line2": "rgb(0,255,0)",
-    "line3": "rgb(0,0,255)",
-}
+
+try:
+    with open("config.yml", "r") as config_in:
+        cfg = yaml.load(config_in, Loader=yaml.SafeLoader)
+        logger.info(f"{cfg}\n")
+except:
+    logger.error(f"config file open failure.")
+    exit(1)
 
 
-def plot_sarima(train, test, forecast, title="Title", zipcode="01001"):
+def plot_forecast(train, test, test_pred, forecast, title="", zipcode="", locale=[]):
 
-    actual = test
-    rmse = np.sqrt(np.mean((forecast - actual) ** 2))
+    # colors = (("blue", 0.5), ("orange", 0.9), ("green", 0.75))
 
-    data_names = ("Train", "Actual", "Forecast")
-    data_streams = [train, actual, forecast]
+    rmse = np.sqrt(np.mean((test_pred - test) ** 2))
+    logger.info(f"RMSE: {rmse}")
 
-    colors = (("blue", 0.5), ("orange", 0.9), ("green", 0.75))
+    data_names = ("Train", "Test", "Test Predict", "Forecast")
+    data_streams = [train, test, test_pred, forecast]
 
     fig = go.Figure()
-
-    columns[forecast_on_idx]
 
     for idx, data in enumerate(data_streams):
         fig.add_trace(
             go.Scatter(
                 x=data.index,
                 y=data,
-                opacity=colors[idx][1],
                 mode="lines",
                 name=data_names[idx],
-                line=dict(color=colors[idx][0], width=2),
-                connectgaps=True,
             )
         )
 
     fig.update_layout(
         title=dict(
             text=(
-                f"Zip Code {distinct_zipcodes[zipcode_index]}<br>{columns[forecast_on_idx]} {len(forecast)}-Month Forecast<br>RMSE: {rmse:0.3f}"
+                f"{title} {len(forecast)}-Month Forecast<br>"
+                + f"{locale[0]}, {locale[2]} {zipcode}<br>"
+                + f"RMSE: {rmse:0.3f}"
             ),
             xanchor="center",
             x=0.5,
-            font=dict(
-                family="Arial",
-                size=20,
-            ),
+            font=dict(family="Arial", size=20),
         ),
-        autosize=True,
-        height=600,
-        margin=dict(
-            l=10,
-            r=10,
-            b=0,
-            t=130,
-            pad=0,
-        ),
+        margin=dict(l=10, r=10, b=0, t=130, pad=0),
         legend=dict(
             orientation="h",
             yanchor="top",
-            y=1.08,
-            x=0.70,
+            y=1.09,
+            x=0.60,
         ),
         xaxis=dict(
             rangeselector=dict(
@@ -83,38 +79,25 @@ def plot_sarima(train, test, forecast, title="Title", zipcode="01001"):
                         dict(count=15, label="15yr", step="year", stepmode="backward"),
                         dict(step="all"),
                     ]
-                )
+                ),
+                bgcolor=cfg["COLORS"]["button_background"],
             ),
             rangeslider=dict(visible=True),
             type="date",
         ),
-        #         updatemenus=[
-        #             dict(
-        #                 buttons=list(
-        #                     [
-        #                         dict(args=["type", "surface"], label="3D Surface", method="restyle"),
-        #                         dict(args=["type", "heatmap"], label="Heatmap", method="restyle"),
-        #                     ]
-        #                 ),
-        #                 direction="down",
-        #                 pad={"r": 10, "t": 10},
-        #                 showactive=True,
-        #                 x=0.1,
-        #                 xanchor="left",
-        #                 y=1.1,
-        #                 yanchor="top",
-        #             ),
-        #         ],
+        plot_bgcolor=cfg["COLORS"]["background"],
+        paper_bgcolor=cfg["COLORS"]["background"],
+        font_color=cfg["COLORS"]["text"],
+        autosize=True,
+        height=500,
     )
 
     return fig
 
 
-def plot_histograms(df, title="Raw Data", zipcode="10001", t_range=[0, None]):
-    # beg == 0, end == None -> include all data
-    df_plot = df.iloc[t_range[0] : t_range[1]]
+def plot_histograms(df, title="", zipcode=""):
 
-    columns = df_plot.columns.tolist()
+    columns = df.columns.tolist()
 
     col_idx = 0
     layout = ts_tools.get_plots_layout(num_columns=4, num_items=len(columns))
@@ -130,7 +113,7 @@ def plot_histograms(df, title="Raw Data", zipcode="10001", t_range=[0, None]):
         for _, col in enumerate(range(1, layout["columns"] + 1)):
             fig.add_trace(
                 go.Histogram(
-                    x=df_plot[columns[col_idx]],
+                    x=df[columns[col_idx]],
                     name=columns[col_idx],
                     showlegend=False,
                 ),
@@ -168,9 +151,9 @@ def plot_histograms(df, title="Raw Data", zipcode="10001", t_range=[0, None]):
             yanchor="bottom",
             y=-0.1,
         ),
-        plot_bgcolor=COLORS["background"],
-        paper_bgcolor=COLORS["background"],
-        font_color=COLORS["text"],
+        plot_bgcolor=cfg["COLORS"]["background"],
+        paper_bgcolor=cfg["COLORS"]["background"],
+        font_color=cfg["COLORS"]["text"],
         autosize=True,
         height=500,
     )
@@ -178,12 +161,11 @@ def plot_histograms(df, title="Raw Data", zipcode="10001", t_range=[0, None]):
     return fig
 
 
-def plot_trends(df, title="Data", zipcode="01001", units={}):
+def plot_trends(df, title="", zipcode="", locale=[]):
 
-    idx = 0
     cols = df.columns.tolist()
-    units_text = [value for value in units.values()]
     layout = ts_tools.get_plots_layout(num_columns=1, num_items=len(cols))
+    units_text = [value for value in cfg["data_units"].values()]
 
     decomps = ts_tools.get_data_decomps(df, period=12)
 
@@ -191,16 +173,17 @@ def plot_trends(df, title="Data", zipcode="01001", units={}):
         rows=layout["rows"],
         cols=layout["columns"],
         subplot_titles=cols,
-        shared_xaxes=False,
+        shared_xaxes=True,
     )
 
-    for feature, series in decomps.items():
+    fig.update_annotations(font_size=14)
+
+    for idx, (feature, series) in enumerate(decomps.items()):
         fig.add_trace(
             go.Scatter(
                 x=series.trend.index,
                 y=series.trend,
-                name=feature,
-                line=dict(width=4),
+                line=dict(width=3.5),
                 connectgaps=True,
                 showlegend=False,
             ),
@@ -209,45 +192,43 @@ def plot_trends(df, title="Data", zipcode="01001", units={}):
         )
         fig.update_yaxes(
             showgrid=True,  # False,
-            gridcolor=COLORS["gridcolor_dark"],
+            gridcolor=cfg["COLORS"]["gridcolor_dark"],
             title_text=units_text[idx],
             row=idx + 1,
             col=layout["columns"],
         )
-        idx += 1
 
     fig.update_layout(
         title=dict(
-            text=f"{title}, Zip Code: {zipcode}",
+            text=(f"{title}<br>" + 
+                  f"{locale[0]}, {locale[2]} {zipcode}"),
             xanchor="center",
             x=0.5,
             font=dict(family="Arial", size=18),
         ),
-        height=875,
-        autosize=True,
-        margin=dict(l=0, r=0, b=0, t=75, pad=25),
-        legend=dict(orientation="h", yanchor="bottom", y=-0.1),
-        # yaxis=dict(title=dict(standoff=0)),
+        yaxis=dict(tickfont=dict(size=9)),
         xaxis=dict(
             rangeselector=dict(
                 buttons=list(
                     [
-                        # dict(count=1, label="1yr", step="year", stepmode="backward"),
-                        # dict(count=2, label="2yr", step="year", stepmode="backward"),
+                        dict(count=2, label="2yr", step="year", stepmode="backward"),
                         dict(count=5, label="5yr", step="year", stepmode="backward"),
                         dict(count=10, label="10yr", step="year", stepmode="backward"),
                         dict(step="all"),
                     ]
                 ),
-                bgcolor=COLORS["button_background"],
+                bgcolor=cfg["COLORS"]["button_background"],
                 y=1.07,
             ),
-            rangeslider=dict(visible=False),
-            type="date",
         ),
-        plot_bgcolor=COLORS["background"],
-        paper_bgcolor=COLORS["background"],
-        font_color=COLORS["text"],
+        plot_bgcolor=cfg["COLORS"]["background"],
+        paper_bgcolor=cfg["COLORS"]["background"],
+        font_color=cfg["COLORS"]["text"],
+        font=dict(size=10),
+        legend=dict(orientation="h", yanchor="bottom", y=-0.1),
+        margin=dict(l=0, r=0, b=0, t=105, pad=0),
+        autosize=True,
+        height=875,
     )
 
     fig.update_xaxes(matches="x")  # , rangeslider_thickness=0.1)
@@ -255,30 +236,27 @@ def plot_trends(df, title="Data", zipcode="01001", units={}):
     return fig
 
 
-def plot_data(df, title="Raw Data", zipcode="10001", units={}):
+def plot_irradiance(df, title="Irradiance Data", zipcode="", irr_columns=[], locale=[]):
 
-    columns = df.columns.tolist()
-    logger.info(f"plot_data columns: {columns}")
+    logger.info(f"plot_data irradiance columns: {irr_columns}")
 
-    col_idx = 0
-    layout = ts_tools.get_plots_layout(num_columns=4, num_items=len(columns))
+    layout = ts_tools.get_plots_layout(num_columns=2, num_items=len(irr_columns))
 
     fig = make_subplots(
         rows=layout["rows"],
         cols=layout["columns"],
-        subplot_titles=columns,
+        subplot_titles=irr_columns,
         shared_xaxes=False,
     )
-
-    units_text = [value for value in units.values()]
-
+    
+    col_idx = 0
     for _, row in enumerate(range(1, layout["rows"] + 1)):
         for _, col in enumerate(range(1, layout["columns"] + 1)):
             fig.add_trace(
                 go.Scatter(
                     x=df.index,
-                    y=df[columns[col_idx]],
-                    name=columns[col_idx],
+                    y=df[irr_columns[col_idx]],
+                    name=irr_columns[col_idx],
                     line=dict(width=1.5),
                     connectgaps=True,
                     showlegend=False,
@@ -286,13 +264,6 @@ def plot_data(df, title="Raw Data", zipcode="10001", units={}):
                 row=row,
                 col=col,
             )
-
-            fig.update_yaxes(
-                title_text=units_text[col_idx],
-                row=row,
-                col=col,
-            )
-            
             fig.update_xaxes(
                 rangeslider=dict(visible=False),
             )
@@ -300,12 +271,12 @@ def plot_data(df, title="Raw Data", zipcode="10001", units={}):
 
     fig.update_layout(
         title=dict(
-            text=f"{title}, Zip Code: {zipcode}",
+            text=f"{title}, {locale[0]}, {locale[2]}, {zipcode}",
             xanchor="center",
             x=0.5,
             font=dict(
                 family="Arial",
-                size=12,
+                size=16,
             ),
         ),
         font=dict(
@@ -318,16 +289,6 @@ def plot_data(df, title="Raw Data", zipcode="10001", units={}):
             t=75,
             pad=10,
         ),
-#         legend=dict(
-#             orientation="h",
-#             yanchor="bottom",
-#             y=-0.1,
-#         ),
-#         yaxis=dict(
-#             title=dict(
-#                 standoff=0,
-#             )
-#         ),
         xaxis=dict(
             rangeselector=dict(
                 buttons=list(
@@ -345,14 +306,14 @@ def plot_data(df, title="Raw Data", zipcode="10001", units={}):
             rangeslider=dict(visible=False),
             type="date",
         ),
-        plot_bgcolor=COLORS["background"],
-        paper_bgcolor=COLORS["background"],
-        font_color=COLORS["text"],
+        plot_bgcolor=cfg["COLORS"]["background"],
+        paper_bgcolor=cfg["COLORS"]["background"],
+        font_color=cfg["COLORS"]["text"],
         autosize=True,
         height=500,
     )
 
-    fig.update_xaxes(matches="x", rangeslider_thickness=0.05)
+    fig.update_xaxes(matches="x")
 
     return fig
 
@@ -419,9 +380,9 @@ def plot_multi_line(df, title="Title", locale=[], columns=[]):
             rangeslider=dict(visible=True),
             type="date",
         ),
-        plot_bgcolor=COLORS["background"],
-        paper_bgcolor=COLORS["background"],
-        font_color=COLORS["text"],
+        plot_bgcolor=cfg["COLORS"]["background"],
+        paper_bgcolor=cfg["COLORS"]["background"],
+        font_color=cfg["COLORS"]["text"],
         autosize=True,
         height=400,
     )

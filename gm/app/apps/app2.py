@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-import os
 import sqlite3
 import sys
 
@@ -18,56 +17,27 @@ from dash.dependencies import Input, Output
 from dash_table import DataTable
 from logzero import logger
 
-# from yaml import dump, load, safe_load
-
 sys.path.append("../../sql")
-sys.path.append("../source")
-sys.path.append("../.")
-import plot_tools
 import queries
+
+sys.path.append("./source")
+import plot_tools
 import ts_tools
 
-pd.set_option("plotting.backend", "plotly")
-
-# open and retrieve configuration information
-configs = None
+# open and retrieve configuration data
 try:
-    with open("../configs/config.yml", "r") as config_in:
-        configs = yaml.load(config_in, Loader=yaml.SafeLoader)
-        logger.info(f"{configs}\n")
+    with open("config.yml", "r") as config_in:
+        cfg = yaml.load(config_in, Loader=yaml.SafeLoader)
+        logger.info(f"{cfg}\n")
 except:
     logger.error(f"config file open failure.")
     exit(1)
 
-cfg_vars = configs["url_variables"]
-logger.info(f"variables: {cfg_vars}\n")
-
-years = configs["request_years"]
-logger.info(f"years: {years}\n")
-
-db_path = configs["file_paths"]["db_path"]
-
-city = configs["location_info"]["city"]
-state = configs["location_info"]["state"]
-db_file = city + "_" + state + ".db"
-db_file = "nsrdb_monthly.db"
-
-db_table1 = configs["table_names"]["db_table1"]
-db_table2 = configs["table_names"]["db_table2"]
-
-logger.info(f"{db_path}, {db_file}")
-
-data_units = configs["data_units"]
-meteoro_fields = configs["meteorological_fields"]
-viz_pages = configs["viz_page_options"]
-
-nrows = configs["num_rows"][0]
-logger.info(f"number of rows: {nrows}\n")
-
+db_path = cfg["file_paths"]["db_path"]
 db_files = ts_tools.get_db_files(db_path)
 logger.info(f"DB Path: {db_path}\n{db_files}\n")
 
-# define app2 page layout
+# --------------------------begin layout--------------------------#
 layout_app2 = html.Div(
     [
         dbc.Row(
@@ -104,7 +74,7 @@ layout_app2 = html.Div(
 )
 
 
-# begin callbacks
+# --------------------------begin callbacks--------------------------#
 @app.callback(
     Output("app2-dd-zipcode-selection", "options"),
     [
@@ -123,7 +93,7 @@ def get_zipcodes(file_name):
     # return the list object to properly populate the dropdown!
     return [{"label": zipcode, "value": zipcode} for zipcode in zipcodes]
 
-
+#-------------------------------------------------------------------#
 @app.callback(
     Output("app2-dd-zipcode-selection", "value"),
     [
@@ -134,13 +104,13 @@ def set_zipcode_value(options):
     logger.info(f"app2 zipcode selected: {options[0]['value']}")
     return options[0]["value"]
 
-
+#-------------------------------------------------------------------#
 @app.callback(
     Output("app2-graph-trend-1", "figure"),
-#     [
-#         Output("app2-graph-trend-1", "figure"),
-#         Output("app2-graph-trend-2", "figure"),
-#     ],
+    #     [
+    #         Output("app2-graph-trend-1", "figure"),
+    #         Output("app2-graph-trend-2", "figure"),
+    #     ],
     [
         Input("app2-dd-db-selection", "value"),
         Input("app2-dd-zipcode-selection", "value"),
@@ -168,7 +138,7 @@ def graph_output(db_filename, zipcode):
         logger.info(f"app2 Made elif: {db_filename}, {zipcode}")
 
     else:
-        db_filename = db_files[0]
+        db_filename = cfg["file_names"]["default_db"]
         conn = ts_tools.get_db_connection(db_path, db_filename)
         zipcodes = ts_tools.get_db_zipcodes(conn)
         zipcode = zipcodes[0]
@@ -177,13 +147,13 @@ def graph_output(db_filename, zipcode):
         logger.ifno(f"app2 Made else: {db_filename}, {zipcode}")
 
     logger.info(f"app2 passed if/elif/else")
-    
-    title1 = "Data Trends"
+
+    title1 = "Trend Data (decomposed)"
     fig1 = plot_tools.plot_trends(
         df,
         title=title1,
         zipcode=zipcode,
-        units=data_units,
+        locale=locale_data,
     )
     logger.info(f"app2 passed {title1}")
 
@@ -195,12 +165,4 @@ def graph_output(db_filename, zipcode):
     #     )
     #     logger.info(f"app2 passed {title2}")
 
-    #     title3 = "Meteorological Conditions"
-    #     fig3 = plot_tools.plot_multi_line(
-    #         df,
-    #         title=title3,
-    #         locale=locale_data,
-    #         columns=meteoro_fields,
-    #     )
-
-    return fig1 # , fig2  # , fig3
+    return fig1  # , fig2
