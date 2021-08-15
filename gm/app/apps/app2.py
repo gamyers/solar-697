@@ -48,6 +48,7 @@ layout_app2 = html.Div(
                         options=[{"label": db, "value": db} for db in db_files],
                         value="nsrdb_monthly.db",
                         placeholder="Select a database",
+                        persistence=True,
                     ),
                     width={"size": 2, "offset": 0},
                 ),
@@ -55,6 +56,7 @@ layout_app2 = html.Div(
                     dcc.Dropdown(
                         id="app2-dd-zipcode-selection",
                         placeholder="Select a Zip Code",
+                        persistence=True,
                     ),
                     width={"size": 2, "offset": 1},
                 ),
@@ -94,27 +96,21 @@ def get_zipcodes(file_name):
     return [{"label": zipcode, "value": zipcode} for zipcode in zipcodes]
 
 #-------------------------------------------------------------------#
-@app.callback(
-    Output("app2-dd-zipcode-selection", "value"),
-    [
-        Input("app2-dd-zipcode-selection", "options"),
-    ],
-)
-def set_zipcode_value(options):
-    logger.info(f"app2 zipcode selected: {options[0]['value']}")
-    return options[0]["value"]
+# @app.callback(
+#     Output("app2-dd-zipcode-selection", "value"),
+#     [
+#         Input("app2-dd-zipcode-selection", "options"),
+#     ],
+# )
+# def set_zipcode_value(options):
+#     logger.info(f"app2 zipcode selected: {options[0]['value']}")
+#     return options[0]["value"]
 
 #-------------------------------------------------------------------#
 @app.callback(
     Output("app2-graph-trend-1", "figure"),
-    #     [
-    #         Output("app2-graph-trend-1", "figure"),
-    #         Output("app2-graph-trend-2", "figure"),
-    #     ],
-    [
-        Input("app2-dd-db-selection", "value"),
-        Input("app2-dd-zipcode-selection", "value"),
-    ],
+    Input("app2-dd-db-selection", "value"),
+    Input("app2-dd-zipcode-selection", "value"),
 )
 def graph_output(db_filename, zipcode):
 
@@ -140,11 +136,11 @@ def graph_output(db_filename, zipcode):
     else:
         db_filename = cfg["file_names"]["default_db"]
         conn = ts_tools.get_db_connection(db_path, db_filename)
-        zipcodes = ts_tools.get_db_zipcodes(conn)
-        zipcode = zipcodes[0]
+        # zipcodes = ts_tools.get_db_zipcodes(conn)
+        # zipcode = zipcodes[0]
         locale_data = ts_tools.get_locale_data(conn, zipcode)
         df = ts_tools.get_irr_data(conn, zipcode)
-        logger.ifno(f"app2 Made else: {db_filename}, {zipcode}")
+        logger.info(f"app2 Made else: {db_filename}, {zipcode}")
 
     logger.info(f"app2 passed if/elif/else")
 
@@ -157,12 +153,4 @@ def graph_output(db_filename, zipcode):
     )
     logger.info(f"app2 passed {title1}")
 
-    #     title2 = "Trend 2"
-    #     fig2 = plot_tools.plot_histograms(
-    #         df,
-    #         title=title2,
-    #         zipcode=zipcode,
-    #     )
-    #     logger.info(f"app2 passed {title2}")
-
-    return fig1  # , fig2
+    return fig1

@@ -136,14 +136,14 @@ def get_zipcodes(file_name):
 
 
 # -------------------------------------------------------------------#
-@app.callback(
-    Output("app3-dd-zipcode-selection", "value"),
-    Input("app3-dd-zipcode-selection", "options"),
-)
-def set_zipcode_value(options):
-    logger.info(f"app3 zipcode selected: {options[0]['value']}")
-    # print(f"app3 set_zipcode_value: {options[0]['value']}")
-    return options[0]["value"]
+# @app.callback(
+#     Output("app3-dd-zipcode-selection", "value"),
+#     Input("app3-dd-zipcode-selection", "options"),
+# )
+# def set_zipcode_value(options):
+#     logger.info(f"app3 zipcode selected: {options[0]['value']}")
+#     # print(f"app3 set_zipcode_value: {options[0]['value']}")
+#     return options[0]["value"]
 
 
 # -------------------------------------------------------------------#
@@ -174,13 +174,18 @@ def get_features(file_name):
 
 
 # -------------------------------------------------------------------#
-@app.callback(
-    Output("app3-dd-feature-selection", "value"),
-    Input("app3-dd-feature-selection", "options"),
-)
-def set_feature_value(options):
-    logger.info(f"app3 feature selected: {options[6]['value']}")
-    return options[6]["value"]
+# @app.callback(
+#     Output("app3-dd-feature-selection", "value"),
+#     Input("app3-dd-feature-selection", "options"),
+# )
+# def set_feature_value(options):
+#     logger.info(f"app3 feature selected: {options[6]['value']}")
+#     return options[6]["value"]
+
+
+# -------------------------------------------------------------------#
+# store the most recent forecast plot for reuse until new plot
+plot_store={"fig1": go.Figure(), "fig2": go.Figure()}
 
 
 # -------------------------------------------------------------------#
@@ -200,7 +205,6 @@ def set_feature_value(options):
 )
 def graph_output(n_clicks, db_filename, zipcode, feature):
 
-    # feature = feature_selection
     cntx = dash.callback_context
     context = cntx.triggered[0]["prop_id"].split(".")[0]
 
@@ -225,13 +229,11 @@ def graph_output(n_clicks, db_filename, zipcode, feature):
         # print(f"Made if: {db_filename}, {zipcode}, {feature}")
 
     elif context == "app3-btn-forecast":
-        # db_filename = cfg["file_names"]["default_db"]
         conn = ts_tools.get_db_connection(db_path, db_filename)
         # zipcodes = ts_tools.get_db_zipcodes(conn)
         # zipcode = zipcodes[0]
         locale_data = ts_tools.get_locale_data(conn, zipcode)
         df = ts_tools.get_irr_data(conn, zipcode)
-        # feature = feature_selection
 
         logger.info(f"app3 Made else: {db_filename}, {zipcode}, {locale_data}, {feature}")
         # print(f"Made else: {db_filename}, {zipcode}, {locale_data}, {feature}")
@@ -288,7 +290,7 @@ def graph_output(n_clicks, db_filename, zipcode, feature):
         auto_forecast = auto_model.predict(n_periods=fc_periods, return_conf_int=False)
         auto_forecast = pd.Series(auto_forecast, index=dt_idx)
 
-        title2 = f"{feature}, Diff,"
+        title2 = f"{feature}, Seasonal Diff,"
         fig2 = plot_tools.plot_forecast(
             train[feature],
             test[feature],
@@ -300,9 +302,9 @@ def graph_output(n_clicks, db_filename, zipcode, feature):
         )
         logger.info(f"app3 passed {title2}")
 
+        plot_store.update({"fig1": fig1})
+        plot_store.update({"fig2": fig2})
+        
         return fig1, fig2
     
-    if context != "app3-btn-forecast":
-        return go.Figure(), go.Figure()
-    else:
-        return fig1, fig2
+    return plot_store["fig1"], plot_store["fig2"]
