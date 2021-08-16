@@ -183,7 +183,7 @@ def graph_output(db_filename, zipcode):
     cntx = dash.callback_context
     context = cntx.triggered[0]["prop_id"].split(".")[0]
     logger.info(f"app1 graph_output #1 Context = {context}\n")
-    print(f"app1 graph_output #1 Context: {context}")
+    # print(f"app1 graph_output #1 Context: {context}")
 
     if context == "dd-db-selection":
         conn = ts_tools.get_db_connection(db_path, db_filename)

@@ -35,28 +35,31 @@ app.layout = html.Div(
         dbc.Row(
             [
                 dbc.Col(
-                    dbc.Nav(
-                        [
-                            dbc.NavLink(
-                                "EDA",
-                                href="/apps/app1",
-                                active="exact",
-                            ),
-                            dbc.NavLink(
-                                "Data Trends",
-                                href="/apps/app2",
-                                active="exact",
-                            ),
-                            dbc.NavLink(
-                                "Forecasting",
-                                href="/apps/app3",
-                                active="exact",
-                            ),
-                        ],
-                        vertical=True,
-                        pills=True,
-                        style=navbar_style,
-                    ),
+                    [
+                        html.H5("Solar Irrandiance Data Explorer", style={"color": "gold"}),
+                        dbc.Nav(
+                            [
+                                dbc.NavLink(
+                                    "EDA",
+                                    href="/apps/app1",
+                                    active="exact",
+                                ),
+                                dbc.NavLink(
+                                    "Data Trends",
+                                    href="/apps/app2",
+                                    active="exact",
+                                ),
+                                dbc.NavLink(
+                                    "Forecasting",
+                                    href="/apps/app3",
+                                    active="exact",
+                                ),
+                            ],
+                            vertical=True,
+                            pills=True,
+                            style=navbar_style,
+                        ),
+                    ],
                     width=1,
                 ),
                 dbc.Col(
