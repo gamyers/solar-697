@@ -49,8 +49,8 @@ def get_arima_fft_model(train, fc_periods):
         m=1,
         start_p=1,
         start_q=1,
-        max_p=2,
-        max_q=2,
+        max_p=3,
+        max_q=4,
     )
 
     pipe = pipeline.Pipeline(
@@ -87,8 +87,7 @@ def get_arima_auto_model(train, fc_periods):
         # start_D=0,
         # max_D=2,
     )
-    
+
     model.fit(train)
 
     return model
-

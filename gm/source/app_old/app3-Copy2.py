@@ -2,7 +2,6 @@
 
 import sqlite3
 import sys
-import pickle
 
 import dash
 import dash_bootstrap_components as dbc
@@ -52,6 +51,8 @@ layout_app3 = html.Div(
                         value=cfg["file_names"]["default_db"],
                         placeholder="Select a database",
                         persistence=True,
+                        persistence_type="session",
+                        persisted_props=["value"],
                     ),
                     width={"size": 2, "offset": 0},
                 ),
@@ -60,6 +61,8 @@ layout_app3 = html.Div(
                         id="app3-dd-zipcode-selection",
                         placeholder="Select a Zip Code",
                         persistence=True,
+                        persistence_type="session",
+                        persisted_props=["value"],
                     ),
                     width={"size": 2, "offset": 1},
                 ),
@@ -69,6 +72,8 @@ layout_app3 = html.Div(
                         value="GHI",
                         placeholder="Select a Feature",
                         persistence=True,
+                        persistence_type="session",
+                        persisted_props=["value"],
                     ),
                     width={"size": 2, "offset": 1},
                 ),
@@ -78,11 +83,9 @@ layout_app3 = html.Div(
                             "Forecast",
                             id="app3-btn-forecast",
                             type="submit",
-                            color="success",
-                            className="mr-1",
                         ),
                     ],
-                    width={"size": 1, "offset": 2},
+                    width={"size": 1, "offset": 1},
                 ),
             ],
         ),
@@ -93,9 +96,7 @@ layout_app3 = html.Div(
                         "ARIMA with Fourier Seasonal Tranformation",
                         style={"display": "inline-block", "textAlign": "center"},
                     ),
-                    dcc.Graph(
-                        id="app3-graph-arima-1",
-                    ),
+                    dcc.Graph(id="app3-graph-arima-1"),
                 ],
                 width={"size": 11},
             ),
@@ -107,9 +108,7 @@ layout_app3 = html.Div(
                         "ARIMA with Traditional Seasonal Differencing",
                         style={"display": "inline-block", "textAlign": "center"},
                     ),
-                    dcc.Graph(
-                        id="app3-graph-arima-2",
-                    ),
+                    dcc.Graph(id="app3-graph-arima-2"),
                 ],
                 width={"size": 11},
             ),
@@ -126,35 +125,40 @@ layout_app3 = html.Div(
     ],
 )
 def get_zipcodes(file_name):
+    # persistence = file_name
     logger.info(f"get_zipcodes callback: {file_name}")
-    # print(f"app3 get_zipcodes callback: {file_name}")
-
+    print(f"get_zipcodes callback: {file_name}")
+    
     conn = ts_tools.get_db_connection(db_path, file_name)
     zipcodes = ts_tools.get_db_zipcodes(conn)
     conn.close()
 
     logger.info(f"app3 zipcodes retrieved\n{zipcodes}")
-    # print(f"app3 1st of zipcodes retrieved: {zipcodes[0]}")
+    # print(f"app3 zipcodes retrieved\n{zipcodes}")
 
     # return the list object to properly populate the dropdown!
     return [{"label": zipcode, "value": zipcode} for zipcode in zipcodes]
 
 
 # -------------------------------------------------------------------#
-# @app.callback(
-#     Output("app3-dd-zipcode-selection", "value"),
-#     Input("app3-dd-zipcode-selection", "options"),
-# )
-# def set_zipcode_value(options):
-#     logger.info(f"app3 zipcode selected: {options[0]['value']}")
-#     # print(f"app3 set_zipcode_value: {options[0]['value']}")
-#     return options[0]["value"]
+@app.callback(
+    Output("app3-dd-zipcode-selection", "value"),
+    [
+        Input("app3-dd-zipcode-selection", "options"),
+    ],
+)
+def set_zipcode_value(options):
+    logger.info(f"app3 zipcode selected: {options[0]['value']}")
+    print(f"app3 zipcode selected: {options[0]['value']}")
+    return options[0]["value"]
 
 
 # -------------------------------------------------------------------#
 @app.callback(
     Output("app3-dd-feature-selection", "options"),
-    Input("app3-dd-db-selection", "value"),
+    [
+        Input("app3-dd-db-selection", "value"),
+    ],
 )
 def get_features(file_name):
     logger.info(f"get_features callback")
@@ -179,62 +183,104 @@ def get_features(file_name):
 
 
 # -------------------------------------------------------------------#
-# @app.callback(
-#     Output("app3-dd-feature-selection", "value"),
-#     Input("app3-dd-feature-selection", "options"),
-# )
-# def set_feature_value(options):
-#     logger.info(f"app3 feature selected: {options[6]['value']}")
-#     return options[6]["value"]
+@app.callback(
+    Output("app3-dd-feature-selection", "value"),
+    [
+        Input("app3-dd-feature-selection", "options"),
+    ],
+)
+def set_feature_value(options):
+    logger.info(f"app3 feature selected: {options[6]['value']}")
+    return options[6]["value"]
 
 
 # -------------------------------------------------------------------#
 @app.callback(
-    Output("app3-graph-arima-1", "figure"),
-    Output("app3-graph-arima-2", "figure"),
-    # -------------------------------------------
-    Input("app3-btn-forecast", "n_clicks"),
-    # -------------------------------------------
-    State("app3-dd-db-selection", "value"),
-    State("app3-dd-zipcode-selection", "value"),
-    State("app3-dd-feature-selection", "value"),
+    [
+        Output("app3-graph-arima-1", "figure"),
+        Output("app3-graph-arima-2", "figure"),
+    ],
+    [
+        Input("app3-btn-forecast", "n_clicks"),
+    ],
+    [
+        State("app3-dd-db-selection", "value"),
+        State("app3-dd-zipcode-selection", "value"),
+        State("app3-dd-feature-selection", "value"),        
+    ],
 )
-def graph_output(n_clicks, db_filename, zipcode, feature):
+def graph_output(n_clicks, db_filename, zipcode, feature_selection):
 
+    feature = feature_selection
     cntx = dash.callback_context
     context = cntx.triggered[0]["prop_id"].split(".")[0]
 
     logger.info(f"graph_output entry context: {context}")
-    logger.info(f"graph_output arguments: {db_filename}, {zipcode}, {feature}")
-
-    # print(f"graph_output entry context: {context}")
-    # print(f"graph_output arguments: {db_filename}, {zipcode}, {feature}")
+    logger.info(f"graph_output arguments: {db_filename}, {zipcode}, {feature_selection}")
+    print(f"graph_output entry context: {context}")
+    print(f"graph_output arguments: {db_filename}, {zipcode}, {feature_selection}")
 
     if context == "":
         db_filename = cfg["file_names"]["default_db"]
         conn = ts_tools.get_db_connection(db_path, db_filename)
         zipcodes = ts_tools.get_db_zipcodes(conn)
+        
         if not zipcode:
             zipcode = zipcodes[0]
+        
         locale_data = ts_tools.get_locale_data(conn, zipcode)
         df = ts_tools.get_irr_data(conn, zipcode)
 
         logger.info(f"app3 Made if: {db_filename}, {zipcode}, {locale_data}")
-        # print(f"Made if: {db_filename}, {zipcode}, {feature}")
+        print(f"Made if: {db_filename}, {zipcode}, {feature}")
+    
+    if context == "app3-dd-db-selection":
+        conn = ts_tools.get_db_connection(db_path, db_filename)
+        zipcodes = ts_tools.get_db_zipcodes(conn)
+        zipcode = zipcodes[0]
+        locale_data = ts_tools.get_locale_data(conn, zipcode)
+        df = ts_tools.get_irr_data(conn, zipcode)
+        # feature = "GHI"
+
+        logger.info(f"app3 Made if: {db_filename}, {zipcode}, {locale_data}")
+        print(f"Made if: {db_filename}, {zipcode}, {feature}")
+
+    elif context == "app3-dd-zipcode-selection":
+        conn = ts_tools.get_db_connection(db_path, db_filename)
+        locale_data = ts_tools.get_locale_data(conn, zipcode)
+        df = ts_tools.get_irr_data(conn, zipcode)
+        # feature = "GHI"
+
+        logger.info(f"app3 Made elif: {db_filename}, {zipcode}, {locale_data}, {feature}")
+        print(f"Made elif 1: {db_filename}, {zipcode}, {locale_data}, {feature}")
+
+    elif context == "app3-dd-feature-selection":
+        conn = ts_tools.get_db_connection(db_path, db_filename)
+        locale_data = ts_tools.get_locale_data(conn, zipcode)
+        df = ts_tools.get_irr_data(conn, zipcode)
+        feature = feature_selection
+
+        logger.info(f"app3 Made 2nd elif: {feature}, {locale_data}, {locale_data}")
+        print(f"Made elif 2: {db_filename}, {zipcode}, {locale_data}, {feature}")
 
     elif context == "app3-btn-forecast":
+        # db_filename = cfg["file_names"]["default_db"]
         conn = ts_tools.get_db_connection(db_path, db_filename)
         # zipcodes = ts_tools.get_db_zipcodes(conn)
         # zipcode = zipcodes[0]
         locale_data = ts_tools.get_locale_data(conn, zipcode)
         df = ts_tools.get_irr_data(conn, zipcode)
+        feature = feature_selection
 
         logger.info(f"app3 Made else: {db_filename}, {zipcode}, {locale_data}, {feature}")
-        # print(f"Made else: {db_filename}, {zipcode}, {locale_data}, {feature}")
+        print(f"Made else: {db_filename}, {zipcode}, {locale_data}, {feature}")
 
     logger.info(f"app3 passed if/elif/else")
     logger.info(f"{db_filename}, {zipcode}, {locale_data}, {feature}")
-    # print(f"ready for forecast: {db_filename}, {zipcode}, {locale_data}, {feature}")
+    print(f"ready for forecast: {db_filename}, {zipcode}, {locale_data}, {feature}")
+
+    persistence_type = "session"
+    persisted_props = ["value"]
 
     if context == "app3-btn-forecast":
         test_len_yrs = 5
@@ -284,7 +330,7 @@ def graph_output(n_clicks, db_filename, zipcode, feature):
         auto_forecast = auto_model.predict(n_periods=fc_periods, return_conf_int=False)
         auto_forecast = pd.Series(auto_forecast, index=dt_idx)
 
-        title2 = f"{feature}, Seasonal Diff,"
+        title2 = f"{feature}, Diff,"
         fig2 = plot_tools.plot_forecast(
             train[feature],
             test[feature],
@@ -296,24 +342,9 @@ def graph_output(n_clicks, db_filename, zipcode, feature):
         )
         logger.info(f"app3 passed {title2}")
 
-        with open("logs/fc_fig1.pickle", "wb") as fh:
-            pickle.dump(fig1, fh, protocol=pickle.HIGHEST_PROTOCOL)
-
-        with open("logs/fc_fig2.pickle", "wb") as fh:
-            pickle.dump(fig2, fh, protocol=pickle.HIGHEST_PROTOCOL)
-
         return fig1, fig2
 
-    try:
-        with open("logs/fc_fig1.pickle", "rb") as fh:
-            fig1 = pickle.load(fh)
-    except:
-        fig1 = go.Figure()
-
-    try:
-        with open("logs/fc_fig2.pickle", "rb") as fh:
-            fig2 = pickle.load(fh)
-    except:
-        fig2 = go.Figure()
-
-    return fig1, fig2
+    if context != "app3-btn-forecast":
+        return go.Figure(), go.Figure()
+    else:
+        return fig1, fig2
