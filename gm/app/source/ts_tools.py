@@ -14,6 +14,7 @@ from statsmodels.tsa.seasonal import seasonal_decompose
 sys.path.append("../../sql")
 import queries
 
+
 def get_db_connection(db_path, db_filename):
     conn = sqlite3.connect(db_path + db_filename)
     logger.info(f"Connection made: {conn}")
@@ -36,6 +37,7 @@ def get_column_names(conn, table_name):
     names = [name[0] for name in names]
     logger.info(f"Column Names: {names}")
     return names
+
 
 def get_locale_data(conn, zipcode):
     """retrieve locale data from geo_zipcodes table of the database"""
@@ -76,7 +78,7 @@ def get_irr_data(conn, zipcode):
 
 
 def get_plots_layout(num_columns=1, num_items=1):
-    """row, column dimension calculation """
+    """row, column dimension calculation"""
     return {"rows": (math.ceil(num_items / num_columns)), "columns": num_columns}
 
 

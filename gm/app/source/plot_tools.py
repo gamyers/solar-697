@@ -32,8 +32,6 @@ except:
 
 def plot_forecast(train, test, test_pred, forecast, title="", zipcode="", locale=[]):
 
-    # colors = (("blue", 0.5), ("orange", 0.9), ("green", 0.75))
-
     rmse = np.sqrt(np.mean((test_pred - test) ** 2))
     logger.info(f"RMSE: {rmse}")
 
@@ -59,17 +57,14 @@ def plot_forecast(train, test, test_pred, forecast, title="", zipcode="", locale
                 + f"{locale[0]}, {locale[2]} {zipcode}<br>"
                 + f"RMSE: {rmse:0.3f}"
             ),
+            font=dict(family="Arial", size=20),
             xanchor="center",
             x=0.5,
-            font=dict(family="Arial", size=20),
         ),
+        # title_yanchor="top",
+        # title_y=0.5,
         margin=dict(l=10, r=10, b=0, t=130, pad=0),
-        legend=dict(
-            orientation="h",
-            yanchor="top",
-            y=1.09,
-            x=0.60,
-        ),
+        legend=dict(orientation="h", yanchor="top", y=1.09, x=0.60),
         xaxis=dict(
             rangeselector=dict(
                 buttons=list(
@@ -200,8 +195,7 @@ def plot_trends(df, title="", zipcode="", locale=[]):
 
     fig.update_layout(
         title=dict(
-            text=(f"{title}<br>" + 
-                  f"{locale[0]}, {locale[2]} {zipcode}"),
+            text=(f"{title}<br>" + f"{locale[0]}, {locale[2]} {zipcode}"),
             xanchor="center",
             x=0.5,
             font=dict(family="Arial", size=18),
@@ -248,7 +242,7 @@ def plot_irradiance(df, title="Irradiance Data", zipcode="", irr_columns=[], loc
         subplot_titles=irr_columns,
         shared_xaxes=False,
     )
-    
+
     col_idx = 0
     for _, row in enumerate(range(1, layout["rows"] + 1)):
         for _, col in enumerate(range(1, layout["columns"] + 1)):

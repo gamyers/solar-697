@@ -154,7 +154,8 @@ def get_zipcodes(file_name):
     # return the list object to properly populate the dropdown!
     return [{"label": zipcode, "value": zipcode} for zipcode in zipcodes]
 
-#-------------------------------------------------------------------#
+
+# -------------------------------------------------------------------#
 # @app.callback(
 #     Output("dd-zipcode-selection", "value"),
 #     [
@@ -165,7 +166,7 @@ def get_zipcodes(file_name):
 #     logger.info(f"app1 zipcode selected: {options[0]['value']}")
 #     return options[0]["value"]
 
-#-------------------------------------------------------------------#
+# -------------------------------------------------------------------#
 @app.callback(
     # [
     Output("graph-data-view", "figure"),
@@ -173,11 +174,9 @@ def get_zipcodes(file_name):
     Output("graph-meteoro-view", "figure"),
     Output("table-desc-stats", "data"),
     Output("table-desc-stats", "columns"),
-    # ],
-    # [
+    # -------------------------------------
     Input("dd-db-selection", "value"),
     Input("dd-zipcode-selection", "value"),
-    # ],
 )
 def graph_output(db_filename, zipcode):
 
@@ -203,8 +202,9 @@ def graph_output(db_filename, zipcode):
     else:
         db_filename = cfg["file_names"]["default_db"]
         conn = ts_tools.get_db_connection(db_path, db_filename)
-        # zipcodes = ts_tools.get_db_zipcodes(conn)
-        # zipcode = zipcodes[0]
+        zipcodes = ts_tools.get_db_zipcodes(conn)
+        if not zipcode:
+            zipcode = zipcodes[0]
         locale_data = ts_tools.get_locale_data(conn, zipcode)
         df = ts_tools.get_irr_data(conn, zipcode)
         logger.info(f"app1 Made else: {db_filename}, {zipcode}")

@@ -61,14 +61,10 @@ layout_app2 = html.Div(
                     width={"size": 2, "offset": 1},
                 ),
             ],
-            no_gutters=False,
         ),
         dbc.Row(
             dbc.Col(
-                [
-                    dcc.Graph(id="app2-graph-trend-1"),
-                    # dcc.Graph(id="app2-graph-trend-2"),
-                ],
+                dcc.Graph(id="app2-graph-trend-1"),
                 width={"size": 11, "offset": 0},
             )
         ),
@@ -79,9 +75,7 @@ layout_app2 = html.Div(
 # --------------------------begin callbacks--------------------------#
 @app.callback(
     Output("app2-dd-zipcode-selection", "options"),
-    [
-        Input("app2-dd-db-selection", "value"),
-    ],
+    Input("app2-dd-db-selection", "value"),
 )
 def get_zipcodes(file_name):
     logger.info(f"get_zipcodes callback: {file_name}")
@@ -95,7 +89,8 @@ def get_zipcodes(file_name):
     # return the list object to properly populate the dropdown!
     return [{"label": zipcode, "value": zipcode} for zipcode in zipcodes]
 
-#-------------------------------------------------------------------#
+
+# -------------------------------------------------------------------#
 # @app.callback(
 #     Output("app2-dd-zipcode-selection", "value"),
 #     [
@@ -106,7 +101,7 @@ def get_zipcodes(file_name):
 #     logger.info(f"app2 zipcode selected: {options[0]['value']}")
 #     return options[0]["value"]
 
-#-------------------------------------------------------------------#
+# -------------------------------------------------------------------#
 @app.callback(
     Output("app2-graph-trend-1", "figure"),
     Input("app2-dd-db-selection", "value"),
@@ -120,8 +115,8 @@ def graph_output(db_filename, zipcode):
 
     if context == "app2-dd-db-selection":
         conn = ts_tools.get_db_connection(db_path, db_filename)
-        zipcodes = ts_tools.get_db_zipcodes(conn)
-        zipcode = zipcodes[0]
+        # zipcodes = ts_tools.get_db_zipcodes(conn)
+        # zipcode = zipcodes[0]
         locale_data = ts_tools.get_locale_data(conn, zipcode)
         df = ts_tools.get_irr_data(conn, zipcode)
         logger.info(f"app2 Made if: {db_filename}, {zipcode}")
@@ -136,8 +131,9 @@ def graph_output(db_filename, zipcode):
     else:
         db_filename = cfg["file_names"]["default_db"]
         conn = ts_tools.get_db_connection(db_path, db_filename)
-        # zipcodes = ts_tools.get_db_zipcodes(conn)
-        # zipcode = zipcodes[0]
+        zipcodes = ts_tools.get_db_zipcodes(conn)
+        if not zipcode:
+            zipcode = zipcodes[0]
         locale_data = ts_tools.get_locale_data(conn, zipcode)
         df = ts_tools.get_irr_data(conn, zipcode)
         logger.info(f"app2 Made else: {db_filename}, {zipcode}")
