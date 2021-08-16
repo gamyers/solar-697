@@ -61,8 +61,6 @@ def plot_forecast(train, test, test_pred, forecast, title="", zipcode="", locale
             xanchor="center",
             x=0.5,
         ),
-        # title_yanchor="top",
-        # title_y=0.5,
         margin=dict(l=10, r=10, b=0, t=130, pad=0),
         legend=dict(orientation="h", yanchor="top", y=1.09, x=0.60),
         xaxis=dict(
