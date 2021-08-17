@@ -53,11 +53,14 @@ layout_app2 = html.Div(
                     width={"size": 2, "offset": 0},
                 ),
                 dbc.Col(
-                    dcc.Dropdown(
-                        id="app2-dd-zipcode-selection",
-                        placeholder="Select a Zip Code",
-                        persistence=True,
-                    ),
+                    [
+                        dcc.Dropdown(
+                            id="app2-dd-zipcode-selection",
+                            placeholder="Select a Zip Code",
+                            persistence=True,
+                        ),
+                        html.H5(id="app2-dd-zipcode-selection-locale"),
+                    ],
                     width={"size": 2, "offset": 1},
                 ),
             ],
@@ -104,6 +107,7 @@ def get_zipcodes(file_name):
 # -------------------------------------------------------------------#
 @app.callback(
     Output("app2-graph-trend-1", "figure"),
+    Output("app2-dd-zipcode-selection-locale", "children"),
     Input("app2-dd-db-selection", "value"),
     Input("app2-dd-zipcode-selection", "value"),
 )
@@ -149,4 +153,7 @@ def graph_output(db_filename, zipcode):
     )
     logger.info(f"app2 passed {title1}")
 
-    return fig1
+    return (
+        fig1,
+        f"{locale_data[0]}, {locale_data[2]}",
+    )
