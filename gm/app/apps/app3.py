@@ -56,11 +56,14 @@ layout_app3 = html.Div(
                     width={"size": 2, "offset": 0},
                 ),
                 dbc.Col(
-                    dcc.Dropdown(
-                        id="app3-dd-zipcode-selection",
-                        placeholder="Select a Zip Code",
-                        persistence=True,
-                    ),
+                    [
+                        dcc.Dropdown(
+                            id="app3-dd-zipcode-selection",
+                            placeholder="Select a Zip Code",
+                            persistence=True,
+                        ),
+                        html.H5(id="app3-dd-zipcode-selection-locale"),
+                    ],
                     width={"size": 2, "offset": 1},
                 ),
                 dbc.Col(
@@ -153,6 +156,21 @@ def get_zipcodes(file_name):
 
 # -------------------------------------------------------------------#
 @app.callback(
+    Output("app3-dd-zipcode-selection-locale", "children"),
+    Input("app3-dd-zipcode-selection", "value"),
+)
+def return_zipcode_value(zipcode):
+    # logger.info(f"app3 zipcode selected: {options[0]['value']}")
+    # print(f"app3 set_zipcode_value: {options[0]['value']}")
+    db_filename = cfg["file_names"]["default_db"]
+    conn = ts_tools.get_db_connection(db_path, db_filename)
+    locale_data = ts_tools.get_locale_data(conn, zipcode)    
+    
+    return f"{locale_data[0]}, {locale_data[2]}"
+
+
+# -------------------------------------------------------------------#
+@app.callback(
     Output("app3-dd-feature-selection", "options"),
     Input("app3-dd-db-selection", "value"),
 )
@@ -192,6 +210,7 @@ def get_features(file_name):
 @app.callback(
     Output("app3-graph-arima-1", "figure"),
     Output("app3-graph-arima-2", "figure"),
+    # Output("app3-dd-zipcode-selection-locale", "children"),
     # -------------------------------------------
     Input("app3-btn-forecast", "n_clicks"),
     # -------------------------------------------
@@ -316,4 +335,8 @@ def graph_output(n_clicks, db_filename, zipcode, feature):
     except:
         fig2 = go.Figure()
 
-    return fig1, fig2
+    return (
+        fig1,
+        fig2,
+        # f"{locale_data[0]}, {locale_data[2]}",
+    )

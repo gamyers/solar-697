@@ -37,8 +37,11 @@ app.layout = html.Div(
                 dbc.Col(
                     [
                         html.H5("Solar Irrandiance Data Explorer", style={"color": "gold"}),
+                        html.Hr(style={"borderColor": "gold", "borderWidth": 3}),
+                        html.Br(),
                         dbc.Nav(
-                            [
+                            [                                
+                                html.Br(),
                                 dbc.NavLink(
                                     "EDA",
                                     href="/apps/app1",
