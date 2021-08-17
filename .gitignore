@@ -1,6 +1,5 @@
 # root files and directories
-data/db/okc-ok.db
-data/db/tulsa-ok.db
+data/db/*.db
 data/db/*.sqbpro
 logs/
 

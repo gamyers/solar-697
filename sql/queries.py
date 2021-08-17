@@ -1,9 +1,33 @@
 select_nsr_rows = """
-SELECT date_time, zipcode, DHI, DNI, GHI from nsrdb
+SELECT date_time,
+-- year, month, day, 
+-- zipcode,
+Clearsky_DHI, DHI,
+Clearsky_DNI, DNI,
+Clearsky_GHI, GHI,
+Temperature,
+Dew_Point,
+Relative_Humidity,
+Precipitable_Water,
+Pressure,
+Wind_Speed
+-- Wind_Direction,
+from nsrdb
 where zipcode = :zipcode
-and substr(date_time, 1, 4) in (:year1, :year2);
+-- and not (month = 2 and day = 29)
+;
 """
 
+select_column_names = """
+SELECT name FROM PRAGMA_TABLE_INFO(:table_name);
+"""
+
+select_locale_data = """
+select city, county, state
+from geo_zipcodes
+where zipcode = :zipcode
+;
+"""
 
 select_zipcode_geo = """
 select "zipcode",
@@ -23,14 +47,6 @@ select count(zipcode) from nsrdb
 where zipcode = :zipcode
 and substr(date_time, 1, 4) in (:year);
 """
-
-
-# test query
-select_zipcode = """
-select * from geo_zipcodes
-where zipcode = :zipcode;
-"""
-
 
 update_gzc_llltze = """
 update geo_zipcodes
@@ -57,7 +73,10 @@ create table if not exists geo_zipcodes(
 'lat_nrel' FLOAT,
 'lon_nrel' FLOAT,
 'elevation' FLOAT,
-'time_zone' INTEGER
+'time_zone' INTEGER,
+'city' TEXT,
+'county' TEXT,
+'state' TEXT
 );
 """
 
@@ -91,4 +110,33 @@ create table if not exists nsrdb(
 'Wind_Speed' FLOAT,
 'Global_Horizontal_UV_Irradiance_(280-400nm)' FLOAT,
 'Global_Horizontal_UV_Irradiance_(295-385nm)' FLOAT);
+"""
+
+create_table_monthly_nsrdb = """
+create table if not exists nsrdb(
+'id' INTEGER PRIMARY KEY AUTOINCREMENT,
+'location_id' INTEGER,
+'zipcode' CHAR(10),
+'date_time' CHAR(24),
+'Temperature' FLOAT,
+'Clearsky_DHI' FLOAT,
+'DHI' FLOAT,
+'Clearsky_DNI' FLOAT,
+'DNI' FLOAT,
+'Clearsky_GHI' FLOAT,
+'GHI' FLOAT,
+'Dew_Point' FLOAT,
+'Relative_Humidity' FLOAT,
+'Pressure' FLOAT,
+'Precipitable_Water' FLOAT,
+'Wind_Speed' FLOAT,
+'GHI_UV_wd' FLOAT,
+'GHI_UV_nw' FLOAT);
+"""
+
+
+# test query
+select_zipcode = """
+select * from geo_zipcodes
+where zipcode = :zipcode;
 """
