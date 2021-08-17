@@ -1,7 +1,8 @@
 # root files and directories
-data/db/*.db
+# data/db/*.db
 data/db/*.sqbpro
 logs/
+gm/source/secret.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
