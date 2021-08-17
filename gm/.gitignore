@@ -1,5 +1,5 @@
 # my ignore files and folders
-gm/source/secret.py
+source/secret.py
 gm/source/logs/
 gm/notebooks/logs/
 gm/data/
