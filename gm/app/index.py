@@ -6,7 +6,7 @@ import dash_core_components as dcc
 import dash_html_components as html
 import logzero
 from app import app
-from apps import app1, app2, app3
+from apps import app1, app2, app3, blog
 from dash.dependencies import Input, Output
 from dash_table import DataTable
 from logzero import logger
@@ -25,8 +25,8 @@ logger.info(f"{log_path}, {log_file}\n")
 
 
 navbar_style = {
-    "position": "fixed",
-    "top": 70,
+    # "top": 35,
+    # "position": "fixed",    
 }
 
 app.layout = html.Div(
@@ -36,11 +36,17 @@ app.layout = html.Div(
             [
                 dbc.Col(
                     [
-                        html.H5("Solar Irrandiance Data Explorer", style={"color": "gold"}),
+                        html.H5(
+                            "Solar Irradiance Data Explorer",
+                            style={
+                                "color": "gold",
+                            },
+                        ),
                         html.Hr(style={"borderColor": "gold", "borderWidth": 3}),
                         html.Br(),
                         dbc.Nav(
-                            [                                
+                            [
+                                html.Br(),
                                 html.Br(),
                                 dbc.NavLink(
                                     "EDA",
@@ -57,6 +63,11 @@ app.layout = html.Div(
                                     href="/apps/app3",
                                     active="exact",
                                 ),
+#                                 dbc.NavLink(
+#                                     "Blog",
+#                                     href="/apps/blog",
+#                                     active="exact",
+#                                 ),                                
                             ],
                             vertical=True,
                             pills=True,
@@ -87,12 +98,14 @@ app.layout = html.Div(
 def display_page(pathname):
     if pathname == "/":
         return app1.layout_app1
-    if pathname == "/apps/app1":
+    elif pathname == "/apps/app1":
         return app1.layout_app1
     elif pathname == "/apps/app2":
         return app2.layout_app2
     elif pathname == "/apps/app3":
         return app3.layout_app3
+#     elif pathname == "/apps/blog":
+#         return blog.layout_blog
     else:
         return dbc.Jumbotron(
             [

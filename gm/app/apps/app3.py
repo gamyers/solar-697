@@ -110,6 +110,15 @@ layout_app3 = html.Div(
                         "ARIMA with Traditional Seasonal Differencing",
                         style={"display": "inline-block", "textAlign": "center"},
                     ),
+                    dcc.RadioItems(
+                        id="rb-seasonal-diff",
+                        options=[
+                            {"label": " No ", "value": 0},
+                            {"label": " Yes (computationally expensive)", "value": 1},
+                        ],
+                        value=0,
+                        persistence=True,
+                    ),
                     dcc.Graph(
                         id="app3-graph-arima-2",
                     ),
@@ -144,6 +153,17 @@ def get_zipcodes(file_name):
 
 
 # -------------------------------------------------------------------#
+@app.callback(
+    Output("rb-seasonal-diff", "value"),
+    Input("rb-seasonal-diff", "value"),
+)
+def set_checkbox_seas_diff(value):
+    # logger.info(f"app3 seasonal checkbox: {value}")
+    # print(f"app3 seasonal checkbox: {value}")
+    return value
+
+
+# -------------------------------------------------------------------#
 # @app.callback(
 #     Output("app3-dd-zipcode-selection", "value"),
 #     Input("app3-dd-zipcode-selection", "options"),
@@ -164,8 +184,8 @@ def return_zipcode_value(zipcode):
     # print(f"app3 set_zipcode_value: {options[0]['value']}")
     db_filename = cfg["file_names"]["default_db"]
     conn = ts_tools.get_db_connection(db_path, db_filename)
-    locale_data = ts_tools.get_locale_data(conn, zipcode)    
-    
+    locale_data = ts_tools.get_locale_data(conn, zipcode)
+
     return f"{locale_data[0]}, {locale_data[2]}"
 
 
@@ -217,8 +237,9 @@ def get_features(file_name):
     State("app3-dd-db-selection", "value"),
     State("app3-dd-zipcode-selection", "value"),
     State("app3-dd-feature-selection", "value"),
+    State("rb-seasonal-diff", "value"),
 )
-def graph_output(n_clicks, db_filename, zipcode, feature):
+def graph_output(n_clicks, db_filename, zipcode, feature, seasonal):
 
     cntx = dash.callback_context
     context = cntx.triggered[0]["prop_id"].split(".")[0]
@@ -290,36 +311,44 @@ def graph_output(n_clicks, db_filename, zipcode, feature):
             zipcode=zipcode,
             locale=locale_data,
         )
-        logger.info(f"app3 passed {title1}")
-
-        auto_model = pmd_tools.get_arima_auto_model(train[feature], fc_periods)
-        logger.info(auto_model)
-
-        auto_test_pred = auto_model.predict(n_periods=fc_periods, return_conf_int=False)
-        auto_test_pred = pd.Series(auto_test_pred, index=test.index)
-
-        auto_model.update(test[feature])
-
-        auto_forecast = auto_model.predict(n_periods=fc_periods, return_conf_int=False)
-        auto_forecast = pd.Series(auto_forecast, index=dt_idx)
-
-        title2 = f"{feature}, Seasonal Diff,"
-        fig2 = plot_tools.plot_forecast(
-            train[feature],
-            test[feature],
-            auto_test_pred,
-            auto_forecast,
-            title=title2,
-            zipcode=zipcode,
-            locale=locale_data,
-        )
-        logger.info(f"app3 passed {title2}")
 
         with open("logs/fc_fig1.pickle", "wb") as fh:
             pickle.dump(fig1, fh, protocol=pickle.HIGHEST_PROTOCOL)
 
-        with open("logs/fc_fig2.pickle", "wb") as fh:
-            pickle.dump(fig2, fh, protocol=pickle.HIGHEST_PROTOCOL)
+        logger.info(f"app3 FFT finished {title1}")
+
+        print(f"seasonal: {seasonal}")
+        if seasonal:
+            auto_model = pmd_tools.get_arima_auto_model(train[feature], fc_periods)
+            logger.info(auto_model)
+
+            auto_test_pred = auto_model.predict(n_periods=fc_periods, return_conf_int=False)
+            auto_test_pred = pd.Series(auto_test_pred, index=test.index)
+
+            auto_model.update(test[feature])
+
+            auto_forecast = auto_model.predict(n_periods=fc_periods, return_conf_int=False)
+            auto_forecast = pd.Series(auto_forecast, index=dt_idx)
+
+            title2 = f"{feature}, Seasonal Diff,"
+            fig2 = plot_tools.plot_forecast(
+                train[feature],
+                test[feature],
+                auto_test_pred,
+                auto_forecast,
+                title=title2,
+                zipcode=zipcode,
+                locale=locale_data,
+            )
+
+            with open("logs/fc_fig2.pickle", "wb") as fh:
+                pickle.dump(fig2, fh, protocol=pickle.HIGHEST_PROTOCOL)
+
+            logger.info(f"app3 seasonal finished {title1}")
+
+        else:
+            fig2 = go.Figure()
+            logger.info(f"app3 seasonal skipped")
 
         return fig1, fig2
 
