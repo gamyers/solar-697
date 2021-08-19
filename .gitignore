@@ -2,6 +2,7 @@
 # data/db/*.db
 data/db/*.sqbpro
 logs/
+downloads/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
