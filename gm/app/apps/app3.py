@@ -19,12 +19,10 @@ from dash.dependencies import Input, Output, State
 from dash_table import DataTable
 from logzero import logger
 
-sys.path.append("../../sql")
-import queries
-
 sys.path.append("../source")
 import plot_tools
 import pmd_tools
+import queries
 import ts_tools
 
 # open and retrieve configuration data
