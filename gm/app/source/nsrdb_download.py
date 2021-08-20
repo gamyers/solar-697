@@ -67,6 +67,7 @@ raw_path = configs["file_paths"]["download_path_raw"]
 
 city = configs["location_info"]["city"]
 state = configs["location_info"]["state"]
+
 db_file = city + "_" + state + ".db"
 
 db_table1 = configs["table_names"]["db_table1"]
@@ -77,7 +78,7 @@ db_file2 = configs["file_names"]["db_file_gzc"]
 logger.info(f"{db_path}, {db_file}")
 
 nrows = configs["num_rows"][0]
-zip_import = configs["zip_import"][False]
+zip_import = configs["zip_import"][True]
 
 logger.info(f"number of rows: {nrows}\n")
 
@@ -97,6 +98,11 @@ zip_codes = locs["zipcodes"]
 
 logger.info(f"zip codes: {zip_codes}\n")
 
+print(db_path, db_file, db_file2)
+print(data_path)
+print(data_path + "zipcodes_" + city + "_" + state + ".yml")
+#print(zip_codes)
+# exit()
 
 # In[7]:
 
@@ -211,7 +217,7 @@ for year in years:
         try:
             cursor.execute(queries.select_zip_year, {"zipcode": zip_code, "year": year})
             count = cursor.fetchone()
-            # print(count)
+            # logger.info(count)
 
             if (count[0] == "8760") or (count[0] == "8784"):
                 logger.warning(f"data for {year}, {zip_code} already present\n")
