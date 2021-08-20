@@ -3,7 +3,9 @@ source/secret.py
 app/logs/
 notebooks/_*.ipynb
 notebooks/_*.csv
+images/
 /data/us_census/zipcodes.txt
+LICENSE
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
