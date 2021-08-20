@@ -1,9 +1,9 @@
-# Residential Adoption of Photovoltaic Solar Electric Power Generation 
+# Residential Adoption of Photovoltaic<br>Solar Electric Power Generation 
 ## SIADS-697 Capstone
 
-**Master of Applied Data Science**  
-**School of Information**  
-**University of Michigan**  
+**[Master of Applied Data Science](https://www.si.umich.edu/programs/master-applied-data-science-online)**  
+**[School of Information](https://www.si.umich.edu/)**  
+**[University of Michigan](https://umich.edu/)**  
 
 ## Project Collaborators
 > Collin Brosko  
@@ -28,19 +28,19 @@ Table of contents
 - Project Background  
 The project is about gaining a better understanding of the numerous factors impacting the adoption of photovoltaic panels in the residential setting in order to determine which areas are most likely to see a growth in adoption, which areas could see increased adoption with changes to human-controlled factors, and which areas may be best avoided. We are looking to analyze changes in environmental factors due to climate change, the changing cost per Watt of energy versus utility rates, the impacts of policies and incentives as well as sentiment toward renewable energy and solar energy in particular. The output of this work is likely to be multi-faceted, incorporating predictions of adoption rates for regions, identification of weaknesses within a region, and ratings for investment potential within an area. This work is not intended to provide analysis of individual homes, but would rather benefit government, utility and business entities in assessing larger regions.  
 
-- Project Home Location: [GitHub](https://github.com/gamyers/solar-697.git)  
+- Project GitHub: [GitHub](https://github.com/gamyers/solar-697.git)  
 
 ## Project Goals<a name="goals"/>
 
 Brief overall blurb
 
-- Irradiance and Meteorological
+- Irradiance and Meteorological Data  
   - Provide irradiance data at the **ZIP Code** level, accessible via a portable **SQL** database.  
   - Provide **data trends** visualizations of irradiance and meteorological data.  
   - Provide basic **Exploratory Data Analysis** visualizations.  
   - Present all visualizations through an interactive dashboard [Solar Irradiance Data Explorer](https://pv-solar-697.herokuapp.com/) called SIDE-dash  
 
-![SIDE-dash home page](images/side-dash-1.png)    
+![SIDE-dash home page](images/side-dash-1.png)  
 
 - Economics  
 
@@ -49,7 +49,7 @@ Brief overall blurb
 
 ## Key Learning<a name="learning"/>
 
-Brief overall blurb
+Brief overall blurb  
 
 - Irradiance and Meteorological
 The key learning from the collection of solar irradiance data is that the radiation at a given location is not fixed and is susceptible to a variety of influences beyond the seasonal tracking of the sun across the sky. Clouds, water vapor, smoke, dust, and other fine particulate matter all have a bearing on the solar radiation the ultimately arrives at the earth’s surface. Some of these influencers, while not individually indicated, do make themselves known through the “Trend View” on [SIDE-dash](https://pv-solar-697.herokuapp.com/). You are invited to visit and explore for yourself!
@@ -91,7 +91,8 @@ vega-datasets==0.9.0
 ```  
 ## Usage<a name="usage"/>
 
-### Irradiance and Meteorological  
+# SECTION UPDATE - GM
+### Irradiance and Meteorological Data  
 ##### Database preparation  
 A series of notebooks and a python script are used to ready the irradiance database. If needed the zipcode_import.ipynb notebook is used to move data from a CSV file of ZIP Code data into the geo_zipcodes.db database. This is generally no longer required.  
 
@@ -105,12 +106,15 @@ The current final step is to execute the nsrdb_aggregator notebook which, at pre
 
 A future project will be to combine the API download and aggregation into a single process, for multiple aggregation levels.  
 
+Because of the volume of data brought down from [NREL API server](https://developer.nrel.gov/docs/solar/nsrdb/psm3-download/), directory structures outside the bound of this repo are utilized. As such immediate execution of the database preparation notebooks and scripts is not possible without certain setup work; primarily the creation of directory structure to house CSV downloads and intermediate databases.  
 
 # SECTION UPDATE - GM
 ##### Dashboard
-Please be patient when first accessing SIDE-dash, the initial standup on [Heroku](https://heroku.com) may take 30-seconds or so to load.  
+Please be patient when first accessing SIDE-dash, the initial standup on [Heroku](https://heroku.com/) may take 30-seconds or so to load.  
 
 The dashboard should load to the EDA page which presents two dropdowns for data selection. The first is for database selection of which there is currently one available on the Heroku sight. The second dropdown allows for the selection of a ZIP Code and the data behind it. The EDA page presents four views, Irradiance Data, Distribution, Meteorological, and Descriptive Statistics. The Data Trends page has like dropdowns for data selection.  
+
+![SIDE-dash home page](images/side-dash-2.png)  
 
 The Forecasting page adds a third dropdown for selecting the specific data feature on which to forecast. Note that the Forecasting page defaults to not perform a traditional Seasonal Differencing forecast. The traditional method is computationally much more expensive than the Fast Fourier Transform method and should generally be avoided on the Heroku "free" platform.  
 
@@ -121,7 +125,7 @@ The Forecasting page adds a third dropdown for selecting the specific data featu
 ### Policy and Programmatic
 
 ## Future Work<a name="future"/>
-##### Dashboard
+##### Irradiance data and Dashboard  
   - Feature aggregations
     - Period totals for irradiance data
     - The inclusion of cloud cover data
@@ -134,6 +138,8 @@ The Forecasting page adds a third dropdown for selecting the specific data featu
     - Connect dashboard pages by selected ZIP Code values
     - Links to external sources such as NREL
     - Rollover help popups to provide guidance to the visualizations
+  - Process  
+    - Fully pipeline the data download and database create process  
 
 ##### Next Subject
 
@@ -141,8 +147,11 @@ The Forecasting page adds a third dropdown for selecting the specific data featu
 ## Credits & Interviews<a name="credits"/>
 > First one here  
 > Thank you to Rusty Haynes of [Smart Electric Power Alliance](https://sepapower.org) for his time and insights into solar data collection.  
+> Thank you to Meredith Wan and her [TDS](https://towardsdatascience.com/beginners-guide-to-building-a-multi-page-dashboard-using-dash-5d06dbfc7599) article that inspired me to create [SIDE-dash](https://pv-solar-697.herokuapp.com/) on Heroku.  
+> [National Renewable Energy Laboratory](https://www.nrel.gov/index.html) and [National Solar Radiation Database](https://nsrdb.nrel.gov/).  
 > more  
-> more  
+> another  
+> last one  
 
 ## License<a name="MIT"/>
 [MIT](LICENSE)
