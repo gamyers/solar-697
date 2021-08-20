@@ -39,7 +39,9 @@ Brief overall blurb
   - Provide **data trends** visualizations of irradiance and meteorological data.  
   - Provide basic **Exploratory Data Analysis** visualizations.  
   - Present all visualizations through an interactive dashboard [Solar Irradiance Data Explorer](https://pv-solar-697.herokuapp.com/) called SIDE-dash  
-    
+
+![SIDE-dash home page](images/side-dash-1.png)    
+
 - Economics  
 
 - Policy and Programmatic  
@@ -51,6 +53,7 @@ Brief overall blurb
 
 - Irradiance and Meteorological
 The key learning from the collection of solar irradiance data is that the radiation at a given location is not fixed and is susceptible to a variety of influences beyond the seasonal tracking of the sun across the sky. Clouds, water vapor, smoke, dust, and other fine particulate matter all have a bearing on the solar radiation the ultimately arrives at the earth’s surface. Some of these influencers, while not individually indicated, do make themselves known through the “Trend View” on [SIDE-dash](https://pv-solar-697.herokuapp.com/). You are invited to visit and explore for yourself!
+
 
 - Economics  
 
@@ -103,11 +106,13 @@ The current final step is to execute the nsrdb_aggregator notebook which, at pre
 A future project will be to combine the API download and aggregation into a single process, for multiple aggregation levels.  
 
 
-
+# SECTION UPDATE - GM
 ##### Dashboard
 Please be patient when first accessing SIDE-dash, the initial standup on [Heroku](https://heroku.com) may take 30-seconds or so to load.  
 
-Once the dashboard has loaded
+The dashboard should load to the EDA page which presents two dropdowns for data selection. The first is for database selection of which there is currently one available on the Heroku sight. The second dropdown allows for the selection of a ZIP Code and the data behind it. The EDA page presents four views, Irradiance Data, Distribution, Meteorological, and Descriptive Statistics. The Data Trends page has like dropdowns for data selection.  
+
+The Forecasting page adds a third dropdown for selecting the specific data feature on which to forecast. Note that the Forecasting page defaults to not perform a traditional Seasonal Differencing forecast. The traditional method is computationally much more expensive than the Fast Fourier Transform method and should generally be avoided on the Heroku "free" platform.  
 
 ### Economics
 
