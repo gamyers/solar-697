@@ -145,4 +145,4 @@ The Forecasting page adds a third dropdown for selecting the specific data featu
 > more  
 
 ## License<a name="MIT"/>
-[MIT](https://mit-license.org/)
+[MIT](LICENSE)
