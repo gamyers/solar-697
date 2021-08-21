@@ -147,7 +147,7 @@ The Forecasting page adds a third dropdown for selecting the specific data featu
 ## Credits & Interviews<a name="credits"/>
 > First one here  
 > Thank you to Rusty Haynes of [Smart Electric Power Alliance](https://sepapower.org) for his time and insights into solar data collection.  
-> Thank you to Meredith Wan and her [TDS](https://towardsdatascience.com/beginners-guide-to-building-a-multi-page-dashboard-using-dash-5d06dbfc7599) article that inspired me to create [SIDE-dash](https://pv-solar-697.herokuapp.com/) on Heroku.  
+> Thank you to Meredith Wan and her [TDS](https://towardsdatascience.com/beginners-guide-to-building-a-multi-page-dashboard-using-dash-5d06dbfc7599) article that inspired the creation of [SIDE-dash](https://pv-solar-697.herokuapp.com/) on Heroku.  
 > [National Renewable Energy Laboratory](https://www.nrel.gov/index.html) and [National Solar Radiation Database](https://nsrdb.nrel.gov/).  
 > more  
 > another  
