@@ -26,5 +26,7 @@ dependencies:
   - tornado=6.1  
   - tqdm=4.62.1  
   - umap-learn=0.5.0  
-  - uszipcode=0.2.6  
   - vega-datasets=0.9.0  
+  - pip:
+    - vega-datasets==0.9.0  
+    - uszipcode==0.2.6  
