@@ -63,11 +63,11 @@ app.layout = html.Div(
                                     href="/apps/app3",
                                     active="exact",
                                 ),
-#                                 dbc.NavLink(
-#                                     "Blog",
-#                                     href="/apps/blog",
-#                                     active="exact",
-#                                 ),                                
+                                dbc.NavLink(
+                                    "Blog",
+                                    href="/apps/blog",
+                                    active="exact",
+                                ),                                
                             ],
                             vertical=True,
                             pills=True,

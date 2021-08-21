@@ -1,7 +1,7 @@
 # United States Residential Solar Adoption
 ## A University of Michigan MADS Capstone Project
 
-See the blog post and irradiance dash board [here:](https://pv-solar-697.herokuapp.com/) - HTML
+See the blog post and irradiance dash board [here:](https://pv-solar-697.herokuapp.com/apps/blog) - HTML
 
 **[Master of Applied Data Science](https://www.si.umich.edu/programs/master-applied-data-science-online)**  
 **[School of Information](https://www.si.umich.edu/)**  
@@ -16,6 +16,7 @@ See the blog post and irradiance dash board [here:](https://pv-solar-697.herokua
 
 Table of contents
 ==============
+   * [Blog Post](https://pv-solar-697.herokuapp.com/apps/blog)  
    * [About](#about)  
    * [Project Goals](#goals)  
    * [Key Learning](#learning)  
@@ -186,3 +187,4 @@ Diff_in_diff: This notebook functions similar to the previous notebook, but for 
 
 ## License<a name="MIT"/>
 [MIT](LICENSE)
+ 
