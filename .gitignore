@@ -1,7 +1,10 @@
 # root files and directories
-data/db/*.db
+# data/db/*.db
 data/db/*.sqbpro
+downloads/
 logs/
+notebooks/logs
+source/logs
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

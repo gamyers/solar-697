@@ -1,11 +1,11 @@
 # my ignore files and folders
-gm/source/secret.py
-gm/source/logs/
-gm/notebooks/logs/
-gm/data/
+source/secret.py
+app/logs/
 notebooks/_*.ipynb
 notebooks/_*.csv
+images/
 /data/us_census/zipcodes.txt
+LICENSE
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

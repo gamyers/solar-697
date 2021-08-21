@@ -55,11 +55,14 @@ layout_app1 = html.Div(
                     width={"size": 2, "offset": 0},
                 ),
                 dbc.Col(
-                    dcc.Dropdown(
-                        id="dd-zipcode-selection",
-                        placeholder="Select a Zip Code",
-                        persistence=True,
-                    ),
+                    [
+                        dcc.Dropdown(
+                            id="dd-zipcode-selection",
+                            placeholder="Select a Zip Code",
+                            persistence=True,
+                        ),
+                        html.H5(id="dd-zipcode-selection-locale"),
+                    ],
                     width={"size": 2, "offset": 1},
                 ),
             ],
@@ -115,17 +118,18 @@ layout_app1 = html.Div(
                         ),
                         DataTable(
                             id="table-desc-stats",
+                            style_table={
+                                "height": "395px",
+                            },
                             style_cell={
-                                "padding": "5px",
                                 "backgroundColor": "black",
                                 "forgroundColor": "white",
-                                "fontWeight": "bold",
                             },
                             style_header={
-                                "padding": "5px",
                                 "backgroundColor": "black",
                                 "forgroundColor": "white",
                                 "fontWeight": "bold",
+                                "fontColor": "gold",
                             },
                         ),
                     ],
@@ -174,6 +178,7 @@ def get_zipcodes(file_name):
     Output("graph-meteoro-view", "figure"),
     Output("table-desc-stats", "data"),
     Output("table-desc-stats", "columns"),
+    Output("dd-zipcode-selection-locale", "children"),
     # -------------------------------------
     Input("dd-db-selection", "value"),
     Input("dd-zipcode-selection", "value"),
@@ -241,4 +246,11 @@ def graph_output(db_filename, zipcode):
     )
     logger.info(f"app1 passed {title3}")
 
-    return fig1, fig2, fig3, df_desc.to_dict("records"), desc_columns
+    return (
+        fig1,
+        fig2,
+        fig3,
+        df_desc.to_dict("records"),
+        desc_columns,
+        f"{locale_data[0]}, {locale_data[2]}",
+    )
