@@ -1,8 +1,8 @@
 {
     "log_dir": "logs/",
-    "db_dir": "../../data/db/",
-    "data_dir": "../../data/",
-    "policy_data_dir": "../../data/policy/",
+    "db_dir": "../data/db/",
+    "data_dir": "../data/",
+    "policy_data_dir": "../data/policy/",
     "db_dsire": "dsire.db",
     "install_db": "Berkeley.db",
     "diff_db": "diffndiff.db",
