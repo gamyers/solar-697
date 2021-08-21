@@ -50,6 +50,7 @@ layout_app3 = html.Div(
                         value=cfg["file_names"]["default_db"],
                         placeholder="Select a database",
                         persistence=True,
+                        persistence_type="session",
                     ),
                     width={"size": 2, "offset": 0},
                 ),

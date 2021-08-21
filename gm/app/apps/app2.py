@@ -49,6 +49,7 @@ layout_app2 = html.Div(
                         value="nsrdb_monthly.db",
                         placeholder="Select a database",
                         persistence=True,
+                        persistence_type="session",
                     ),
                     width={"size": 2, "offset": 0},
                 ),
