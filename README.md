@@ -16,6 +16,7 @@ See the blog post and irradiance dash board [here:](https://pv-solar-697.herokua
 
 Table of contents
 ==============
+   * [Blog Post](https://pv-solar-697.herokuapp.com/apps/blog)  
    * [About](#about)  
    * [Project Goals](#goals)  
    * [Key Learning](#learning)  
