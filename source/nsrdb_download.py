@@ -1,16 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[1]:
-
-
-#!/usr/bin/env python
-# coding: utf-8
-
-
-# In[2]:
-
-
 import os
 import site
 import sqlite3
@@ -25,30 +12,21 @@ from logzero import logger
 from tqdm import tqdm
 from yaml import dump, load, safe_load
 
-
-# In[3]:
-
-
 sys.path.append("../source")
 import queries
+from secret import nrel_key
 
 
-# In[4]:
-
-
-log_path = "../logs/"
+log_path = "logs/"
 log_file = "nsrdb_download.log"
 
-logzero.logfile(log_path + log_file, maxBytes=1e6, backupCount=5, disableStderrLogger=True)
+logzero.logfile(log_path + log_file, maxBytes=1e5, backupCount=5, disableStderrLogger=True)
 logger.info(f"{log_path}, {log_file}\n")
-
-
-# In[5]:
 
 
 configs = None
 try:
-    with open("../config.yml", "r") as config_in:
+    with open("../source/config.yml", "r") as config_in:
         configs = load(config_in, Loader=yaml.SafeLoader)
         logger.info(f"{configs}\n")
 except:
@@ -83,9 +61,6 @@ zip_import = configs["zip_import"][True]
 logger.info(f"number of rows: {nrows}\n")
 
 
-# In[6]:
-
-
 try:
     with open(data_path + "zipcodes_" + city + "_" + state + ".yml", "r") as locs_in:
         locs = load(locs_in, Loader=yaml.SafeLoader)
@@ -101,10 +76,6 @@ logger.info(f"zip codes: {zip_codes}\n")
 print(db_path, db_file, db_file2)
 print(data_path)
 print(data_path + "zipcodes_" + city + "_" + state + ".yml")
-#print(zip_codes)
-# exit()
-
-# In[7]:
 
 
 # establish db connection and cursor
@@ -120,9 +91,6 @@ conn2 = sqlite3.connect(db_path + db_file2)
 cursor2 = conn2.cursor()
 
 
-# In[8]:
-
-
 # params = {"path": db_path, "db_file2": db_file2}
 # need to test for existance of records in the db
 # and skip the import if so
@@ -136,8 +104,6 @@ if zip_import:
 
 # ### Download link information
 # https://developer.nrel.gov/docs/solar/nsrdb/psm3-download/
-
-# In[9]:
 
 
 for year in years:
