@@ -1,8 +1,6 @@
 # United States Residential Solar Adoption
 ## A University of Michigan MADS Capstone Project
 
-See the blog post and irradiance dash board [here:](https://pv-solar-697.herokuapp.com/apps/blog) - HTML
-
 **[Master of Applied Data Science](https://www.si.umich.edu/programs/master-applied-data-science-online)**  
 **[School of Information](https://www.si.umich.edu/)**  
 **[University of Michigan](https://umich.edu/)**  
@@ -16,7 +14,7 @@ See the blog post and irradiance dash board [here:](https://pv-solar-697.herokua
 
 Table of contents
 ==============
-   * [Blog Post](https://pv-solar-697.herokuapp.com/apps/blog)  
+   * [Visit our Blog Post and Dashboard](https://pv-solar-697.herokuapp.com/apps/blog) - HTML
    * [About](#about)  
    * [Project Goals](#goals)  
    * [Key Learning](#learning)  
