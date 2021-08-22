@@ -26,11 +26,9 @@ Table of contents
 
 ## About<a name="about"/>
 
-- Project Background  
+##### Project Background  
   
-The [Energy Information Administration] stated that 17% of retail energy sales in the United States were to the residential sector. With a growing fleet of electric vehicles and increased conversions of residential systems to electricity (ie heating), this number can be expected to grow. Photovoltaic installations at this point of use may offer both tremendous benefit as well as unique issues. This project is about gaining a better understanding of the numerous factors impacting the adoption of photovoltaic panels in the residential setting in order to determine which areas are most likely to see a growth in adoption, which areas could see increased adoption with changes to human-controlled factors, and which areas may be best avoided. We are looking to analyze changes in environmental factors due to climate change, the changing cost per Watt of energy versus utility rates, the impacts of policies and incentives as well as sentiment toward renewable energy and solar energy in particular. The output of this work is likely to be multi-faceted, incorporating predictions of adoption rates for regions, identification of weaknesses within a region, and ratings for investment potential within an area. This work is not intended to provide analysis of individual homes, but would rather benefit government, utility and business entities in assessing larger regions.
-
-- Project GitHub: [GitHub](https://github.com/gamyers/solar-697.git)  
+The [Energy Information Administration](https://www.eia.gov/energyexplained/us-energy-facts/) stated that 17% of retail energy sales in the United States were to the residential sector. With a growing fleet of electric vehicles and increased conversions of residential systems to electricity (ie heating), this number can be expected to grow. Photovoltaic installations at this point of use may offer both tremendous benefit as well as unique issues. This project is about gaining a better understanding of the numerous factors impacting the adoption of photovoltaic panels in the residential setting in order to determine which areas are most likely to see a growth in adoption, which areas could see increased adoption with changes to human-controlled factors, and which areas may be best avoided. We are looking to analyze changes in environmental factors due to climate change, the changing cost per Watt of energy versus utility rates, the impacts of policies and incentives as well as sentiment toward renewable energy and solar energy in particular. The output of this work is likely to be multi-faceted, incorporating predictions of adoption rates for regions, identification of weaknesses within a region, and ratings for investment potential within an area. This work is not intended to provide analysis of individual homes, but would rather benefit government, utility and business entities in assessing larger regions.
 
 ## Project Goals<a name="goals"/>
 
@@ -61,7 +59,7 @@ This work provides understanding of the direction in which factors impacting sol
 Irradiance and Meteorological  
 - The key learning from the collection of solar irradiance data is that the radiation at a given location is not fixed and is susceptible to a variety of influences beyond the seasonal tracking of the sun across the sky. 
   - Clouds, water vapor, smoke, dust, and other fine particulate matter all have a bearing on the solar radiation the ultimately arrives at the earth’s surface.
-  - Some of these influencers, while not individually indicated, do make themselves known through the “Trend View” on [SIDE-dash](https://pv-solar-697.herokuapp.com/). You are invited to visit and explore for yourself!
+  - Some of these influencers, while not individually indicated, do make themselves known through the “Trend View” on [SIDE-dash](https://pv-solar-697.herokuapp.com/apps/app2). You are invited to visit and explore for yourself!
 
 Economics  
 - The states that had higher than average energy costs tended to have a higher-than-average number of installations. With the limited amount of installations, there currently is now negative or positive trend of cost of installation. This will likely change has the technology improves and the number of installations increases (economies of scale). 
@@ -75,8 +73,8 @@ Policy and Programmatic
 
 
 ## Python Environment<a name="enviro"/>  
-pip install **[requirements.txt](requirements.txt)**  
-conda install **[requirements.yml](requirements.yml)**  
+pip environment manager **[requirements.txt](requirements.txt)**  
+conda environment manager **[requirements.yml](requirements.yml)**  
 
 ## Usage<a name="usage"/>
 
