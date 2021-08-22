@@ -1,55 +1,63 @@
 #
 location_info:
-  city: ""
-  # city: "tulsa"
+  city: "for"
+  state: "test"
+  
   # city: "okc"
-  # city: "chino"
   # state: "ok"
+  # city: "chino"
   # state: "ca"
-  state: "AzCaFlNyTxWaWi"
-  # state: "OkCa"
+  # city: ""  
+  # state: "AzCaFlNyTxWaWi"
 #
 file_paths:
-  data_path: "../data/"
-  db_path: "../data/db/"
-  data_path_zips: "../data/us_census/"  
-  download_path: "../../../../data/"
-  download_db_path: "../../../../data/db/"
-  download_path_gaz: "../../../../data/us_census/"
-  download_path_zips: "../../../../data/us_census/"  
-  download_path_raw: "/home/gmyers/_UMSI/697/data/nsrdb_csv2/"
-  # "~/_UMSI/697/data/nsrdb_csv2/"
+  data_path:      "../data/"
+  db_path:        "../data/db/"
+  data_path_zips: "../data/us_census/"
+  data_path_gaz:  "../data/us_census/"
+  zip_db_path:    "../data/zipcode_db/"
+  downloads_path:      "../downloads/"
+  downloads_db_path:   "../downloads/db/"  
+  downloads_path_gaz:  "../downloads/us_census/"
+  downloads_path_zips: "../downloads/us_census/"  
+  # download_path_raw:  "~/_UMSI/697/data/nsrdb_csv?/"
+  downloads_path_raw:  "/home/gmyers/_UMSI/697/data/nsrdb_test/"
 #
 file_names:
   data_file_gaz: "2020_Gaz_zcta_national.txt"
   data_file_zips: "zipcodes.txt"
   db_file_gzc: "geo_zipcodes.db"
+  zip_db_file: "zip_code_database.csv"
+  agg_db_file: "nsrdb_monthly"
   default_db: "nsrdb_monthly.db"
 #
 request_years:
   - 2020
-  - 2019
-  - 2018
-  - 2017
-  - 2016
-  - 2015
-  - 2014
-  - 2013
-  - 2012
-  - 2011
-  - 2010
-  - 2009
-  - 2008
-  - 2007
-  - 2006
-  - 2005
-  - 2004
-  - 2003
-  - 2002
-  - 2001
-  - 2000
-  - 1999
-  - 1998
+#   - 2019
+#   - 2018
+#   - 2017
+#   - 2016
+#   - 2015
+#   - 2014
+#   - 2013
+#   - 2012
+#   - 2011
+#   - 2010
+#   - 2009
+#   - 2008
+#   - 2007
+#   - 2006
+#   - 2005
+#   - 2004
+#   - 2003
+#   - 2002
+#   - 2001
+#   - 2000
+#   - 1999
+#   - 1998
+#
+aggregation:
+  period: "M"
 #
 table_names:
   db_table1: "nsrdb"

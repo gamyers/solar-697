@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 import logzero
 import numpy as np
 import pandas as pd
@@ -22,7 +20,7 @@ logger.info(f"plot_tools logger initialized")
 
 
 try:
-    with open("config.yml", "r") as config_in:
+    with open("../source/config.yml", "r") as config_in:
         cfg = yaml.load(config_in, Loader=yaml.SafeLoader)
         logger.info(f"{cfg}\n")
 except:
