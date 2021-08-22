@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 import logzero
 import numpy as np
 import pandas as pd
@@ -22,7 +20,7 @@ logger.info(f"plot_tools logger initialized")
 
 
 try:
-    with open("config.yml", "r") as config_in:
+    with open("../source/config.yml", "r") as config_in:
         cfg = yaml.load(config_in, Loader=yaml.SafeLoader)
         logger.info(f"{cfg}\n")
 except:
@@ -52,36 +50,22 @@ def plot_irradiance(df, title="Irradiance Data", zipcode="", irr_columns=[], loc
                     y=df[irr_columns[col_idx]],
                     name=irr_columns[col_idx],
                     line=dict(width=1.5),
-                    connectgaps=True,
                     showlegend=False,
                 ),
                 row=row,
                 col=col,
             )
-            fig.update_xaxes(
-                rangeslider=dict(visible=False),
-            )
+            fig.update_annotations({'font': {'size': 13}})
+            fig.update_xaxes(rangeslider=dict(visible=False))
+            fig.update_yaxes(visible=True, showticklabels=True)
             col_idx += 1
 
     fig.update_layout(
         title=dict(
             text=f"{title}, {locale[0]}, {locale[2]}, {zipcode}",
+            font=dict(family="Arial", size=16),
             xanchor="center",
             x=0.5,
-            font=dict(
-                family="Arial",
-                size=16,
-            ),
-        ),
-        font=dict(
-            size=12,
-        ),
-        margin=dict(
-            l=5,
-            r=5,
-            b=0,
-            t=75,
-            pad=10,
         ),
         xaxis=dict(
             rangeselector=dict(
@@ -100,9 +84,11 @@ def plot_irradiance(df, title="Irradiance Data", zipcode="", irr_columns=[], loc
             rangeslider=dict(visible=False),
             type="date",
         ),
+        margin=dict(l=5, r=5, b=0, t=75, pad=0),
         plot_bgcolor=cfg["COLORS"]["background"],
         paper_bgcolor=cfg["COLORS"]["background"],
         font_color=cfg["COLORS"]["text"],
+        font=dict(size=10),
         autosize=True,
         height=395,
     )
@@ -137,40 +123,29 @@ def plot_histograms(df, title="", zipcode=""):
                 row=row,
                 col=col,
             )
-
             fig.update_yaxes(
-                title_text="Count",
+                title_text=None,
                 row=row,
                 col=col,
+                visible=True,
+                showticklabels=True,
             )
-
+            fig.update_annotations({'font': {'size': 13}})
             col_idx += 1
 
     fig.update_layout(
         title=dict(
             text=f"Feature Histograms",
+            font=dict(family="Arial", size=16),
             xanchor="center",
             x=0.5,
-            font=dict(
-                family="Arial",
-                size=18,
-            ),
         ),
-        margin=dict(
-            l=5,
-            r=5,
-            b=0,
-            t=75,
-            pad=0,
-        ),
-        legend=dict(
-            orientation="h",
-            yanchor="bottom",
-            y=-0.1,
-        ),
+        margin=dict(l=5, r=5, b=0, t=75, pad=0),
+        legend=dict(orientation="h", yanchor="bottom", y=-0.1),
         plot_bgcolor=cfg["COLORS"]["background"],
         paper_bgcolor=cfg["COLORS"]["background"],
         font_color=cfg["COLORS"]["text"],
+        font=dict(size=10),
         autosize=True,
         height=395,
     )
@@ -181,7 +156,6 @@ def plot_histograms(df, title="", zipcode=""):
 def plot_multi_line(df, title="Title", locale=[], columns=[]):
 
     colors = (("red", 0.75), ("yellow", 0.75), ("green", 0.80), ("blue", 0.90))
-
     label_text = [label.replace("_", " ") for label in columns]
 
     fig = go.Figure()
@@ -203,25 +177,9 @@ def plot_multi_line(df, title="Title", locale=[], columns=[]):
     fig.update_layout(
         title=dict(
             text=f"{title} for {locale[0]}, {locale[2]}",
+            font=dict(family="Arial", size=16),
             xanchor="center",
             x=0.5,
-            font=dict(
-                family="Arial",
-                size=18,
-            ),
-        ),
-        margin=dict(
-            l=5,
-            r=5,
-            b=0,
-            t=75,
-            pad=0,
-        ),
-        legend=dict(
-            orientation="h",
-            yanchor="top",  # "bottom",
-            y=1.1,
-            x=0.30,
         ),
         xaxis=dict(
             rangeselector=dict(
@@ -240,9 +198,12 @@ def plot_multi_line(df, title="Title", locale=[], columns=[]):
             rangeslider=dict(visible=True),
             type="date",
         ),
+        margin=dict(l=5, r=5, b=0, t=75, pad=0),
+        legend=dict(orientation="h", yanchor="top", y=1.1, x=0.30),
         plot_bgcolor=cfg["COLORS"]["background"],
         paper_bgcolor=cfg["COLORS"]["background"],
         font_color=cfg["COLORS"]["text"],
+        font=dict(size=10),
         autosize=True,
         height=395,
     )
@@ -281,8 +242,9 @@ def plot_trends(df, title="", zipcode="", locale=[]):
             row=idx + 1,
             col=layout["columns"],
         )
+        fig.update_annotations({'font': {'size': 13}})
         fig.update_yaxes(
-            showgrid=True,  # False,
+            showgrid=True,
             gridcolor=cfg["COLORS"]["gridcolor_dark"],
             title_text=units_text[idx],
             row=idx + 1,
@@ -292,11 +254,13 @@ def plot_trends(df, title="", zipcode="", locale=[]):
     fig.update_layout(
         title=dict(
             text=(f"{title}<br>" + f"{locale[0]}, {locale[2]} {zipcode}"),
+            font=dict(family="Arial", size=16),
             xanchor="center",
             x=0.5,
-            font=dict(family="Arial", size=18),
         ),
-        yaxis=dict(tickfont=dict(size=9)),
+        yaxis=dict(
+            tickfont=dict(size=9),
+        ),
         xaxis=dict(
             rangeselector=dict(
                 buttons=list(
@@ -311,17 +275,17 @@ def plot_trends(df, title="", zipcode="", locale=[]):
                 y=1.07,
             ),
         ),
+        margin=dict(l=0, r=5, b=5, t=90, pad=0),
+        legend=dict(orientation="h", yanchor="bottom", y=-0.1),
         plot_bgcolor=cfg["COLORS"]["background"],
         paper_bgcolor=cfg["COLORS"]["background"],
         font_color=cfg["COLORS"]["text"],
         font=dict(size=10),
-        legend=dict(orientation="h", yanchor="bottom", y=-0.1),
-        margin=dict(l=0, r=0, b=0, t=105, pad=0),
         autosize=True,
         height=825,
     )
 
-    fig.update_xaxes(matches="x")  # , rangeslider_thickness=0.1)
+    fig.update_xaxes(matches="x")
 
     return fig
 
@@ -353,12 +317,10 @@ def plot_forecast(train, test, test_pred, forecast, title="", zipcode="", locale
                 + f"{locale[0]}, {locale[2]} {zipcode}<br>"
                 + f"RMSE: {rmse:0.3f}"
             ),
-            font=dict(family="Arial", size=20),
+            font=dict(family="Arial", size=16),
             xanchor="center",
             x=0.5,
         ),
-        margin=dict(l=10, r=10, b=0, t=130, pad=0),
-        legend=dict(orientation="h", yanchor="top", y=1.09, x=0.60),
         xaxis=dict(
             rangeselector=dict(
                 buttons=list(
@@ -374,9 +336,12 @@ def plot_forecast(train, test, test_pred, forecast, title="", zipcode="", locale
             rangeslider=dict(visible=True),
             type="date",
         ),
+        margin=dict(l=20, r=10, b=0, t=90, pad=0),
+        legend=dict(orientation="h", yanchor="top", y=1.09, x=0.60),
         plot_bgcolor=cfg["COLORS"]["background"],
         paper_bgcolor=cfg["COLORS"]["background"],
         font_color=cfg["COLORS"]["text"],
+        font=dict(size=10),
         autosize=True,
         height=395,
     )

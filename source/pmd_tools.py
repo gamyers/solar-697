@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 from functools import lru_cache
 
 import logzero

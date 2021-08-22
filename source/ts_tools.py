@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 import glob
 import math
 import sqlite3
@@ -11,8 +9,21 @@ import pandas as pd
 from logzero import logger
 from statsmodels.tsa.seasonal import seasonal_decompose
 
-sys.path.append("../../sql")
+sys.path.append("../source")
 import queries
+
+
+# Connect to logzero log file
+log_path = "logs/"
+log_file = "dashboard_app.log"
+logzero.logfile(
+    log_path + log_file,
+    maxBytes=1e5,
+    backupCount=1,
+    disableStderrLogger=True,
+)
+logger.info(f"ts_tools logger initialized")
+
 
 
 def get_db_connection(db_path, db_filename):

@@ -1,0 +1,150 @@
+#
+location_info:
+  city: "for"
+  state: "test"
+  
+  # city: "okc"
+  # state: "ok"
+  # city: "chino"
+  # state: "ca"
+  # city: ""  
+  # state: "AzCaFlNyTxWaWi"
+#
+file_paths:
+  data_path:      "../data/"
+  db_path:        "../data/db/"
+  data_path_zips: "../data/us_census/"
+  data_path_gaz:  "../data/us_census/"
+  zip_db_path:    "../data/zipcode_db/"
+  downloads_path:      "../downloads/"
+  downloads_db_path:   "../downloads/db/"  
+  downloads_path_gaz:  "../downloads/us_census/"
+  downloads_path_zips: "../downloads/us_census/"  
+  # download_path_raw:  "~/_UMSI/697/data/nsrdb_csv?/"
+  downloads_path_raw:  "/home/gmyers/_UMSI/697/data/nsrdb_test/"
+#
+file_names:
+  data_file_gaz: "2020_Gaz_zcta_national.txt"
+  data_file_zips: "zipcodes.txt"
+  db_file_gzc: "geo_zipcodes.db"
+  zip_db_file: "zip_code_database.csv"
+  agg_db_file: "nsrdb_monthly"
+  default_db: "nsrdb_monthly.db"
+#
+request_years:
+  - 2020
+#   - 2019
+#   - 2018
+#   - 2017
+#   - 2016
+#   - 2015
+#   - 2014
+#   - 2013
+#   - 2012
+#   - 2011
+#   - 2010
+#   - 2009
+#   - 2008
+#   - 2007
+#   - 2006
+#   - 2005
+#   - 2004
+#   - 2003
+#   - 2002
+#   - 2001
+#   - 2000
+#   - 1999
+#   - 1998
+#
+aggregation:
+  period: "M"
+#
+table_names:
+  db_table1: "nsrdb"
+  db_table2: "geo_zipcodes"
+#
+data_units:
+  Clearsky_DHI: "Wh/m^2"
+  DHI: "Wh/m^2"
+  Clearsky_DNI: "Wh/m^2"
+  DNI: "Wh/m^2"
+  Clearsky_GHI: "Wh/m^2"
+  GHI: "Wh/m^2"
+  Temperature: "°C"
+  Dew_Point: "°C"
+  Relative_Humidity: "%RH"
+  Precipitable_Water: "mm"
+  Pressure: "mbar"
+  Wind_Speed: "m/s" 
+#
+meteorological_fields:
+  - "Temperature"
+  - "Relative_Humidity"
+  - "Dew_Point"
+  - "Precipitable_Water"
+#
+viz_page_options:
+  - "EDA"
+  - "Decomposition"
+  - "Forecasting"
+#
+drop_columns:
+  - "id"
+  - "location_id"
+  - "zipcode"
+  - "date_time"
+  - "GHI_UV_wd"
+  - "GHI_UV_nw"
+#
+irradiance_columns:
+  - "Clearsky_DHI"
+  - "DHI"
+  - "Clearsky_DNI"
+  - "DNI"
+  - "Clearsky_GHI"
+  - "GHI"
+#
+COLORS:
+  "background": "#111111"
+  "text": "#7FDBFF"
+  "gridcolor_dark": "#555555"
+  "button_background": "#555555"
+#
+time_index:
+  true: 1
+  false: 0
+#
+num_rows: 
+  - 99999
+#
+zip_import:
+  true: 1
+  false: 0
+#
+url_variables:
+  affiliation: University+of+Michigan
+  attrs: ""
+  email: gamyers@umich.edu
+  interval: "60"
+  key: "user_provided"
+  lat: 36.0
+  leap_year: "true"
+  lon: -96.0
+  mailing_list: "true"
+  name: Gregory+Myers
+  use: UMSI+Capstone+Project
+  utc: "false"
+  year: ""
+#
+url:
+  url_string: f'https://developer.nrel.gov/api/solar/nsrdb_psm3_download.csv?wkt=POINT({zip_codes[zip_code]["lon"]}%20{zip_codes[zip_code]["lat"]})&names={year}&leap_day={vars["leap_year"]}&interval={vars["interval"]}&utc={vars["utc"]}&full_name={vars["name"]}&email={vars["email"]}&affiliation={vars["affiliation"]}&mailing_list={vars["mailing_list"]}&reason={vars["use"]}&api_key={vars["key"]}&attributes={vars["attrs"]}'
+#
+lstm_cfg:
+  data_units: "M" # "D"
+  period: 12
+  periods_train: 16
+  periods_val: 5
+  periods_test: 2
+  min_max_lower: -1
+  min_max_upper: 1
+#
