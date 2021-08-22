@@ -18,9 +18,9 @@ Table of contents
    * [About](#about)  
    * [Project Goals](#goals)  
    * [Key Learning](#learning)  
-   * [Python Environment](#enviro)  
    * [Usage](#usage)  
    * [Future Work](#future)  
+   * [Python Environment](#enviro)  
    * [Credits & Interviews](#credits)  
    * [Licence](#MIT)  
 
@@ -70,11 +70,6 @@ Policy and Programmatic
 - The primary factors in determining whether to install solar panels are the amount of sun available along with the cost of electricity in the area. The cost of installation showed to be significant, however less so. Certain programs demonstrate a significant ability to impact adoption as well.
 - Programs which impact taxes, whether through personal tax credits/ deductions or property tax incentives, proved to be very effective along with programs impacting long term payback, such as feed-in tariffs or value of solar tariffs. Programs that offered grants and rebates were shown to be far less effective.
 - Individual program specifics within a program type can vary greatly, resulting in a need for individual program analysis.  
-
-
-## Python Environment<a name="enviro"/>  
-pip environment manager **[requirements.txt](requirements.txt)**  
-conda environment manager **[requirements.yml](requirements.yml)**  
 
 ## Usage<a name="usage"/>
 
@@ -170,8 +165,18 @@ Diff_in_diff: This notebook functions similar to the previous notebook, but for 
     - provide updated feature weights
     - toggle program feature to adjust forecast  
 
+## Python Environment<a name="enviro"/>  
+pip manager **[requirements.txt](requirements.txt)**  
 
+```python
+$ pip install -r requirements.txt
+```  
 
+conda manager **[requirements.yml](requirements.yml)**  
+
+```python
+$ conda env create --file requirements.yml
+```  
 
 ## Credits & Interviews<a name="credits"/>
 
