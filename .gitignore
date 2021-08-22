@@ -3,6 +3,7 @@
 data/db/*.sqbpro
 downloads/
 logs/
+dashboard/logs
 notebooks/logs
 source/logs
 secret.py

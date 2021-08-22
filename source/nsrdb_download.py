@@ -1,5 +1,3 @@
-import os
-import site
 import sqlite3
 import sys
 from time import sleep
@@ -39,9 +37,9 @@ logger.info(f"variables: {cfg_vars}\n")
 years = configs["request_years"]
 logger.info(f"years: {years}\n")
 
-db_path = configs["file_paths"]["download_db_path"]
-data_path = configs["file_paths"]["data_path_zips"]
-raw_path = configs["file_paths"]["download_path_raw"]
+db_path = configs["file_paths"]["downloads_db_path"]
+data_path = configs["file_paths"]["downloads_path_zips"]
+raw_path = configs["file_paths"]["downloads_path_raw"]
 
 city = configs["location_info"]["city"]
 state = configs["location_info"]["state"]
@@ -74,8 +72,7 @@ zip_codes = locs["zipcodes"]
 logger.info(f"zip codes: {zip_codes}\n")
 
 print(db_path, db_file, db_file2)
-print(data_path)
-print(data_path + "zipcodes_" + city + "_" + state + ".yml")
+print(data_path + " zipcodes_" + city + "_" + state + ".yml")
 
 
 # establish db connection and cursor
@@ -96,7 +93,7 @@ cursor2 = conn2.cursor()
 # and skip the import if so
 
 if zip_import:
-    cursor.execute("""ATTACH DATABASE '../../../data/db/geo_zipcodes.db' AS gzc_db;""")
+    cursor.execute("""ATTACH DATABASE '../data/db/geo_zipcodes.db' AS gzc_db;""")
     cursor.execute("""INSERT INTO 'geo_zipcodes' SELECT * FROM gzc_db.geo_zipcodes;""")
     conn.commit()
     cursor.execute("DETACH gzc_db")
@@ -120,7 +117,7 @@ for year in years:
             + f'&affiliation={cfg_vars["affiliation"]}'
             + f'&mailing_list={cfg_vars["mailing_list"]}'
             + f'&reason={cfg_vars["use"]}'
-            + f'&api_key={cfg_vars["key"]}'
+            + f'&api_key={nrel_key}'
             + f'&attributes={cfg_vars["attrs"]}'
         )
 
