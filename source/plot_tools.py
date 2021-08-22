@@ -50,13 +50,14 @@ def plot_irradiance(df, title="Irradiance Data", zipcode="", irr_columns=[], loc
                     y=df[irr_columns[col_idx]],
                     name=irr_columns[col_idx],
                     line=dict(width=1.5),
-                    connectgaps=True,
                     showlegend=False,
                 ),
                 row=row,
                 col=col,
             )
+            fig.update_annotations({'font': {'size': 13}})
             fig.update_xaxes(rangeslider=dict(visible=False))
+            fig.update_yaxes(visible=True, showticklabels=True)
             col_idx += 1
 
     fig.update_layout(
@@ -83,7 +84,7 @@ def plot_irradiance(df, title="Irradiance Data", zipcode="", irr_columns=[], loc
             rangeslider=dict(visible=False),
             type="date",
         ),
-        margin=dict(l=5, r=5, b=0, t=75, pad=10),
+        margin=dict(l=5, r=5, b=0, t=75, pad=0),
         plot_bgcolor=cfg["COLORS"]["background"],
         paper_bgcolor=cfg["COLORS"]["background"],
         font_color=cfg["COLORS"]["text"],
@@ -122,7 +123,14 @@ def plot_histograms(df, title="", zipcode=""):
                 row=row,
                 col=col,
             )
-            fig.update_yaxes(title_text="Count", row=row, col=col)
+            fig.update_yaxes(
+                title_text=None,
+                row=row,
+                col=col,
+                visible=True,
+                showticklabels=True,
+            )
+            fig.update_annotations({'font': {'size': 13}})
             col_idx += 1
 
     fig.update_layout(
@@ -234,6 +242,7 @@ def plot_trends(df, title="", zipcode="", locale=[]):
             row=idx + 1,
             col=layout["columns"],
         )
+        fig.update_annotations({'font': {'size': 13}})
         fig.update_yaxes(
             showgrid=True,
             gridcolor=cfg["COLORS"]["gridcolor_dark"],
