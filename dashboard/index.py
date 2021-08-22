@@ -53,7 +53,7 @@ app.layout = html.Div(
                                     active="exact",
                                 ),
                                 dbc.NavLink(
-                                    "Data Trends",
+                                    "Trends",
                                     href="/apps/app2",
                                     active="exact",
                                 ),
@@ -117,6 +117,7 @@ def display_page(pathname):
 
 if __name__ == "__main__":
     app.run_server(
+        # host="your-local-ip-here"
         host="192.168.64.164",
         port="8088",
         use_reloader=True,
