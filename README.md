@@ -1,4 +1,4 @@
-# United States Residential Solar Adoption
+# United States Residential Solar Photovoltaic Panel Adoption
 ## A University of Michigan MADS Capstone Project
 
 **[Master of Applied Data Science](https://www.si.umich.edu/programs/master-applied-data-science-online)**  
