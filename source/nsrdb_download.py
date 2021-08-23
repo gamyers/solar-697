@@ -1,3 +1,5 @@
+# see ./notebooks/nsrdb_download.ipynb for details related to this script
+
 import sqlite3
 import sys
 from time import sleep
@@ -37,27 +39,31 @@ logger.info(f"variables: {cfg_vars}\n")
 years = configs["request_years"]
 logger.info(f"years: {years}\n")
 
-db_path = configs["file_paths"]["downloads_db_path"]
+db1_path = configs["file_paths"]["downloads_path_db"]
+db2_path = configs["file_paths"]["db_path"]
 data_path = configs["file_paths"]["downloads_path_zips"]
 raw_path = configs["file_paths"]["downloads_path_raw"]
 
 city = configs["location_info"]["city"]
 state = configs["location_info"]["state"]
 
-db_file = city + "_" + state + ".db"
+db1_file = city + "_" + state + ".db"
+db2_file = configs["file_names"]["db_file_gzc"]
 
 db_table1 = configs["table_names"]["db_table1"]
 db_table2 = configs["table_names"]["db_table2"]
 
-db_file2 = configs["file_names"]["db_file_gzc"]
-
-logger.info(f"{db_path}, {db_file}")
+logger.info(f"{db1_path}, {db1_file}")
+logger.info(f"{db2_path}, {db2_file}")
 
 nrows = configs["num_rows"][0]
 zip_import = configs["zip_import"][True]
 
 logger.info(f"number of rows: {nrows}\n")
 
+print(db1_path, db1_file)
+print(db2_path, db2_file)
+print(data_path + " zipcodes_" + city + "_" + state + ".yml")
 
 try:
     with open(data_path + "zipcodes_" + city + "_" + state + ".yml", "r") as locs_in:
@@ -68,15 +74,11 @@ except:
     exit(1)
 
 zip_codes = locs["zipcodes"]
-
 logger.info(f"zip codes: {zip_codes}\n")
-
-print(db_path, db_file, db_file2)
-print(data_path + " zipcodes_" + city + "_" + state + ".yml")
 
 
 # establish db connection and cursor
-conn = sqlite3.connect(db_path + db_file)
+conn = sqlite3.connect(db1_path + db1_file)
 cursor = conn.cursor()
 
 cursor.execute(queries.create_table_nsrdb)
@@ -84,14 +86,12 @@ conn.commit()
 cursor.execute(queries.create_table_geo_zipcodes)
 conn.commit()
 
-conn2 = sqlite3.connect(db_path + db_file2)
+conn2 = sqlite3.connect(db2_path + db2_file)
 cursor2 = conn2.cursor()
 
-
-# params = {"path": db_path, "db_file2": db_file2}
 # need to test for existance of records in the db
 # and skip the import if so
-
+# for now...
 if zip_import:
     cursor.execute("""ATTACH DATABASE '../data/db/geo_zipcodes.db' AS gzc_db;""")
     cursor.execute("""INSERT INTO 'geo_zipcodes' SELECT * FROM gzc_db.geo_zipcodes;""")

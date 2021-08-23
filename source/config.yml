@@ -1,7 +1,7 @@
 #
 location_info:
-  city: "for"
-  state: "test"
+  city: "city"
+  state: "state"
   
   # city: "okc"
   # state: "ok"
@@ -9,27 +9,6 @@ location_info:
   # state: "ca"
   # city: ""  
   # state: "AzCaFlNyTxWaWi"
-#
-file_paths:
-  data_path:      "../data/"
-  db_path:        "../data/db/"
-  data_path_zips: "../data/us_census/"
-  data_path_gaz:  "../data/us_census/"
-  zip_db_path:    "../data/zipcode_db/"
-  downloads_path:      "../downloads/"
-  downloads_db_path:   "../downloads/db/"  
-  downloads_path_gaz:  "../downloads/us_census/"
-  downloads_path_zips: "../downloads/us_census/"  
-  # download_path_raw:  "~/_UMSI/697/data/nsrdb_csv?/"
-  downloads_path_raw:  "/home/gmyers/_UMSI/697/data/nsrdb_test/"
-#
-file_names:
-  data_file_gaz: "2020_Gaz_zcta_national.txt"
-  data_file_zips: "zipcodes.txt"
-  db_file_gzc: "geo_zipcodes.db"
-  zip_db_file: "zip_code_database.csv"
-  agg_db_file: "nsrdb_monthly"
-  default_db: "nsrdb_monthly.db"
 #
 request_years:
   - 2020
@@ -56,12 +35,35 @@ request_years:
 #   - 1999
 #   - 1998
 #
-aggregation:
-  period: "M"
+file_paths:
+  data_path:      "../data/"
+  db_path:        "../data/db/"
+  data_path_zips: "../data/us_census/"
+  data_path_gaz:  "../data/us_census/"
+  zip_db_path:    "../data/zipcode_db/"
+  
+  downloads_path:      "../downloads/"
+  downloads_path_db:   "../downloads/db/"  
+  downloads_path_gaz:  "../downloads/us_census/" 
+  downloads_path_zips: "../downloads/zip_codes/"
+  downloads_path_raw:  "../downloads/raw/"
+  # download_path_raw:  "~/_UMSI/697/data/nsrdb_csv?/"
+#
+file_names:
+  data_file_gaz: "2020_Gaz_zcta_national.txt"
+  data_zipcodes: "zipcodes.txt"
+  db_file_gzc: "geo_zipcodes.db"
+  zip_db_file: "zip_code_database.csv"
+  agg_db_file: "nsrdb_monthly"
+  default_db: "nsrdb_monthly.db"
 #
 table_names:
   db_table1: "nsrdb"
   db_table2: "geo_zipcodes"
+#
+
+aggregation:
+  period: "M"
 #
 data_units:
   Clearsky_DHI: "Wh/m^2"
@@ -136,11 +138,8 @@ url_variables:
   utc: "false"
   year: ""
 #
-url:
-  url_string: f'https://developer.nrel.gov/api/solar/nsrdb_psm3_download.csv?wkt=POINT({zip_codes[zip_code]["lon"]}%20{zip_codes[zip_code]["lat"]})&names={year}&leap_day={vars["leap_year"]}&interval={vars["interval"]}&utc={vars["utc"]}&full_name={vars["name"]}&email={vars["email"]}&affiliation={vars["affiliation"]}&mailing_list={vars["mailing_list"]}&reason={vars["use"]}&api_key={vars["key"]}&attributes={vars["attrs"]}'
-#
 lstm_cfg:
-  data_units: "M" # "D"
+  data_units: "M"
   period: 12
   periods_train: 16
   periods_val: 5
