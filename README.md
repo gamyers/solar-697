@@ -192,7 +192,7 @@ $ conda env create --file requirements.yml
 > Thank you to Rusty Haynes of [Smart Electric Power Alliance](https://sepapower.org) for his time and insights into solar data collection.  
 > Thank you to Meredith Wan and her [TDS](https://towardsdatascience.com/beginners-guide-to-building-a-multi-page-dashboard-using-dash-5d06dbfc7599) article that inspired me to create [SIDE-dash](https://pv-solar-697.herokuapp.com/) on Heroku.  
 > [National Renewable Energy Laboratory](https://www.nrel.gov/index.html) and [National Solar Radiation Database](https://nsrdb.nrel.gov/).  
-> Thank you to Julie Roth from the City of Ann Arbor for participation in an informational interview regarding factors impacting solar adoption  
+> Thank you to Julie Roth from the City of Ann Arbor for participation in an informational interview regarding factors impacting solar adoption.  
 > Thank you to Autumn Proudlove of the North Carolina Clean Energy Technology Center for providing insight into consumer decision-making and various programs.  
 
 ## License<a name="MIT"/>
