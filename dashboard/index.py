@@ -48,6 +48,11 @@ app.layout = html.Div(
                                 html.Br(),
                                 html.Br(),
                                 dbc.NavLink(
+                                    "Blog",
+                                    href="/apps/blog",
+                                    active="exact",
+                                ),                                
+                                dbc.NavLink(
                                     "EDA",
                                     href="/apps/app1",
                                     active="exact",
@@ -62,11 +67,6 @@ app.layout = html.Div(
                                     href="/apps/app3",
                                     active="exact",
                                 ),
-                                dbc.NavLink(
-                                    "Blog",
-                                    href="/apps/blog",
-                                    active="exact",
-                                ),                                
                             ],
                             vertical=True,
                             pills=True,
@@ -96,15 +96,15 @@ app.layout = html.Div(
 )
 def display_page(pathname):
     if pathname == "/":
-        return app1.layout_app1
+        return blog.layout_blog
+    elif pathname == "/apps/blog":
+        return blog.layout_blog
     elif pathname == "/apps/app1":
         return app1.layout_app1
     elif pathname == "/apps/app2":
         return app2.layout_app2
     elif pathname == "/apps/app3":
         return app3.layout_app3
-    elif pathname == "/apps/blog":
-        return blog.layout_blog
     else:
         return dbc.Jumbotron(
             [
