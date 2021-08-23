@@ -107,7 +107,7 @@ Initial source data is located within the main /data folder. An Archives folder 
 ##### Notebooks
 Berkeley_data_downloader: this notebook is necessary to download .csv files containing installation data. These files are too large to be maintained within the repository.
 
-Shapefile_to_GEOJSON: DO NOT RUN, source data not present. This notebook provides a fairly simple, but consuming operation of converting zip code shapefile to a geojson format necessary for future operations. The resulting geojson formatted file has been stored in the main data folder.
+Shapefile_to_GEOJSON: This notebook provides a fairly simple operation of converting zip code shapefile to a geojson format necessary for future operations.
 
 Zipcode_stats_accumulation: This notebook obtains zipcode level statistics such as home count, income and a single year irradiance measure and produced a dataframe which is later merged with other data.
 
