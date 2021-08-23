@@ -162,7 +162,7 @@ Diff_in_diff: This notebook functions similar to the previous notebook, but for 
   - Improved source data or mined features
     - Consider re-aggregating data at county level to reflect most data sources, improve speed and increase sample sizes per division.
     - More granular demographic and housing data
-    - Mndividual program start and end date as well as feature magnitude versus boolean value may be extracted from summary or program source
+    - Individual program start and end date as well as feature magnitude versus boolean value may be extracted from summary or program source
   - Improved filling of missing data points (dates of no installation) per advanced methodologies
   - Diff_in_diff notebook tool improvements
     - Increase speed to allow plotly dashboard integration
@@ -193,7 +193,7 @@ $ conda env create --file requirements.yml
 > Thank you to Meredith Wan and her [TDS](https://towardsdatascience.com/beginners-guide-to-building-a-multi-page-dashboard-using-dash-5d06dbfc7599) article that inspired me to create [SIDE-dash](https://pv-solar-697.herokuapp.com/) on Heroku.  
 > [National Renewable Energy Laboratory](https://www.nrel.gov/index.html) and [National Solar Radiation Database](https://nsrdb.nrel.gov/).  
 > Thank you to Julie Roth from the City of Ann Arbor for participation in an informational interview regarding factors impacting solar adoption 
-> Thank you to to Autumn Proudlove of the North Carolina Clean Energy Technology Center for providing insight into consumer decision-making and various programs. 
+> Thank you to Autumn Proudlove of the North Carolina Clean Energy Technology Center for providing insight into consumer decision-making and various programs. 
 
 ## License<a name="MIT"/>
 [MIT](LICENSE)
