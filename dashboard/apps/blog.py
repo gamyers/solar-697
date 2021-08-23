@@ -14,8 +14,8 @@ layout_blog = html.Div(
                 html.Iframe(
                     src="/assets/blog.htm",
                     style={
-                        "height": "900em",
-                        "width": "80%",
+                        "height": "1000em",
+                        "width": "85%",
                         "backgroundColor": "lightgrey",
                         "padding-left": "2%",
                         "padding-right": "2%",
