@@ -28,7 +28,7 @@ Table of contents
 
 ##### Project Background  
   
-The [Energy Information Administration](https://www.eia.gov/energyexplained/us-energy-facts/) stated that 17% of retail energy sales in the United States were to the residential sector. With a growing fleet of electric vehicles and increased conversions of residential systems to electricity (ie heating), this number can be expected to grow. Photovoltaic installations at this point of use may offer both tremendous benefit as well as unique issues. This project is about gaining a better understanding of the numerous factors impacting the adoption of photovoltaic panels in the residential setting in order to determine which areas are most likely to see a growth in adoption, which areas could see increased adoption with changes to human-controlled factors, and which areas may be best avoided. We are looking to analyze changes in environmental factors due to climate change, the changing cost per Watt of energy versus utility rates, the impacts of policies and incentives as well as sentiment toward renewable energy and solar energy in particular. The output of this work is likely to be multi-faceted, incorporating predictions of adoption rates for regions, identification of weaknesses within a region, and ratings for investment potential within an area. This work is not intended to provide analysis of individual homes, but would rather benefit government, utility and business entities in assessing larger regions.
+The [Energy Information Administration](https://www.eia.gov/energyexplained/us-energy-facts/) stated that 17% of retail energy sales in the United States were to the residential sector. With a growing fleet of electric vehicles and increased conversions of residential systems to electricity (ie heating), this number can be expected to grow. Photovoltaic installations at this point of use may offer both tremendous benefits as well as unique issues. This project is about gaining a better understanding of the numerous factors impacting the adoption of photovoltaic panels in the residential setting in order to determine which areas are most likely to see a growth in adoption, which areas could see increased adoption with changes to human-controlled factors, and which areas may be best avoided. We are looking to analyze changes in environmental factors due to climate change, the changing cost per Watt of energy versus utility rates, the impacts of policies and incentives as well as sentiment toward renewable energy and solar energy in particular. The output of this work is likely to be multi-faceted, incorporating predictions of adoption rates for regions, identification of weaknesses within a region, and ratings for investment potential within an area. This work is not intended to provide analysis of individual homes, but would rather benefit government, utility and business entities in assessing larger regions.
 
 ## Project Goals<a name="goals"/>
 
@@ -75,19 +75,28 @@ Policy and Programmatic
 
 ### Irradiance and Meteorological Data  
 ##### Database preparation  
-A series of notebooks and a python script are used to ready the irradiance database. If needed the zipcode_import.ipynb notebook is used to move data from a CSV file of ZIP Code data into the geo_zipcodes.db database. This is generally no longer required.  
+If needed the zipcode_import.ipynb notebook is used to move data from a CSV file of ZIP Code data into the geo_zipcodes.db database. This is generally no longer required.  
 
-The zipcodes_get_geos.ipynb is used to query the geo_zipcodes.db and extract lat/lon coordinates for each ZIP Code pulled from a standard text file (one per line). This produces a YAML file that is used by the NREL API download script.  
+A series of notebooks (or a python script) are used to ready the irradiance database. If you do not have a downloads directory structure in your local fork of this repo, execute the create_downloads_dir.ipynb notebook for a default setup. Because of the volume of data brought down from [NREL API server](https://developer.nrel.gov/docs/solar/nsrdb/psm3-download/), the downloads folder is explicity ignored in the .gitignore file. Within the newly created local ./downloads/zip_codes/ directory will be placed the zipcodes.txt file that contains the ZIP Codes of interest. This is a simple one Zip Code per line text file.  
+Example file structure:  
+```txt
+12019
+12027
+12186
+12196
+12309
+```
+Once processed zipcodes.txt is renamed.  
 
-The nsrdb_download.py has several responsibilities, the first of which is to instantiate the irradiance database and the two tables within. The ‘nsrdb’ table a standard “CREATE TABLE…” query and the ‘geo_zipcodes’ table is a simple “INSERT INTO…” query from the geo_zipcodes.db.  
+The zipcodes_get_geos.ipynb notebook is used to query the geo_zipcodes.db and extract lat/lon coordinates for each ZIP Code pulled from the previously mentioned zipcodes.txt file. zipcodes_get_geos.ipynb produces a YAML file that is used by the NREL API download script.  
 
-The NREL API query process now begins requesting data for each ZIP Code for each year between 1998 and 2020. Each received CSV file is process and saved in two forms, a data file and a metadata file. Simultaneously, each data CSV is written to the ‘nsrdb’ table of the irradiance database and certain fields are extracted from the metadata and inserted into the ‘geo_zipcodes’ table and the geo_zipcode.db database.  
+The nsrdb_download.ipynb notebook (or .source/nsrdb_download.py for terminal usage) has several responsibilities, the first of which is to instantiate the irradiance database and the two tables within. The ‘nsrdb’ table is a standard “CREATE TABLE…” query and the ‘geo_zipcodes’ table is an “INSERT INTO…” query from the geo_zipcodes.db.  
 
-The current final step is to execute the nsrdb_aggregator notebook which, at present, performs the initial steps of the nsrdb_download script. Rather than querying the NREL API, the saved raw data is processed into monthly aggregated data and saved to a database similar to that created by nsrdb_download.  
+The NREL API query process now begins requesting data for each ZIP Code for each year between 1998 and 2020 (see [./notebooks/nsrdb_download.ipynb](./notebooks/nsrdb_download.ipynb) for more information). Each received CSV file is processed and saved in two forms, a data file and a metadata file. Simultaneously, each data CSV is written to the ‘nsrdb’ table of the irradiance database and certain fields are extracted from the metadata and inserted into the ‘geo_zipcodes’ table and the geo_zipcode.db database. This notebook will produce a database of hourly data based on the NREL downloads.  
 
-A future project will be to combine the API download and aggregation into a single process, for multiple aggregation levels.  
+The current final step is to execute the nsrdb_aggregator notebook which, at present, performs the initial steps similar to that of the nsrdb_download script. Then, rather than querying the NREL API, the saved raw data is processed into monthly aggregated data and saved to a database similar to that created by nsrdb_download. The current aggregation level is by month but this could expand in the future.  
 
-Because of the volume of data brought down from [NREL API server](https://developer.nrel.gov/docs/solar/nsrdb/psm3-download/), directory structures outside the bound of this repo are utilized. As such immediate execution of the database preparation notebooks and scripts is not possible without certain setup work; primarily the creation of directory structure to house CSV downloads and intermediate databases.  
+A future project would be to combine the API download and aggregation into a single process, and for multiple levels of aggregation.  
 
 ##### Dashboard
 Please be patient when first accessing SIDE-dash, the initial standup on [Heroku](https://heroku.com/) may take 30-seconds or so to load.  
